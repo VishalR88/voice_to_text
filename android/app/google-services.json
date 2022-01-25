@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "270562156176",
+    "firebase_url": "https://voice-to-text-c3429-default-rtdb.firebaseio.com",
     "project_id": "voice-to-text-c3429",
     "storage_bucket": "voice-to-text-c3429.appspot.com"
   },
@@ -19,6 +20,14 @@
           "android_info": {
             "package_name": "com.example.voice_to_text",
             "certificate_hash": "6893dcee25a6c5f867c3449826e98dace185864d"
+          }
+        },
+        {
+          "client_id": "270562156176-ei5hljaug0rj1fklsp6oc9ncgqtplsuc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.voice_to_text",
+            "certificate_hash": "3a664638fe9307e74e8dd79fddb7d973bdd4af0b"
           }
         },
         {

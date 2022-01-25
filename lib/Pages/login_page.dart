@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_to_text/Pages/registerPage.dart';
+import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
 
@@ -26,6 +27,7 @@ class _LogInPageState extends State<LogInPage> {
   final _cityController = TextEditingController();
   final _nationalityController = TextEditingController();
   FirebaseConnection fconnection = FirebaseConnection();
+  bool gbtnprogress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +56,15 @@ class _LogInPageState extends State<LogInPage> {
                       height: 5,
                     ),
                     Row(
-                      children: [
-                        const Text(
+                      children: const [
+                        Text(
                           "Login to continue",
                           style: TextStyle(
                               color: Color(0xFF616161),
                               fontSize: 22,
                               fontWeight: FontWeight.w400),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           width: 12,
                         ),
                         Icon(Icons.arrow_forward)
@@ -200,7 +202,7 @@ class _LogInPageState extends State<LogInPage> {
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (builder) => AudioRecoedScreen()),
+                                        builder: (builder) => const AudioRecoedScreen()),
                                     (route) => false);
                               });
                             }
@@ -208,7 +210,7 @@ class _LogInPageState extends State<LogInPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 18,),
+                    const SizedBox(height: 18,),
                     GestureDetector(
                       onTap:(){
                         Navigator.push(
@@ -240,31 +242,109 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                     SizedBox(child:Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                      children: const [
                         Text("OR",style: TextStyle(color: Colors.grey),),
                       ],
                     ),height: 24,),
 
-                    GestureDetector(
+                    Center(
+                      child: InkWell(
+                        onTap: () {
 
-                      onTap:(){
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (builder) => MobileLogInPage()));
-
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            "Login With Mobile",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15),
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (builder) => MobileLogInPage()));
+                        },
+                        child: Container(
+                          height: 45,
+                          width: 215,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(50)),
+                            border: Border.all(
+                                color: Colors.black87.withOpacity(0.1)),
                           ),
-                        ],
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.phone_android),
+                               Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: Text(
+                                  'Continue with phone',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Center(
+                      child: InkWell(
+                        onTap: () async {
+                         setState(() {
+                           gbtnprogress = true;
+                         });
+                            await AuthClass()
+                                .googleSignin(context)
+                                .whenComplete(() {
+                              setState(() {
+                                gbtnprogress = false;
+                              });
+                            }).onError((error, stackTrace) {
+                              setState(() {
+                                gbtnprogress = false;
+                              });
+                            });
+
+                        },
+                        child: Container(
+                          height: 45,
+                          width: 215,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(50)),
+                            border: Border.all(
+                                color: Colors.black87.withOpacity(0.1)),
+                          ),
+                          padding: const EdgeInsets.only(right: 7),
+                          child:
+                          gbtnprogress
+                              ? const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.black87,
+                              ))
+                              :
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/google.png',
+                                height: 30,
+                                width: 30,
+                              ),
+                              const Padding(
+                                padding:
+                                EdgeInsets.only(left: 5),
+                                child: Text(
+                                  'Continue with google',
+                                  style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ],

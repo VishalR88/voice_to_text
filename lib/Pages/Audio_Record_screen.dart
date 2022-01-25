@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:voice_to_text/Pages/login_page.dart';
 import 'package:voice_to_text/Pages/show_audio_history.dart';
+import 'package:voice_to_text/Services/firebase_auth_service.dart';
 
 class AudioRecoedScreen extends StatefulWidget {
   const AudioRecoedScreen();
@@ -229,6 +230,8 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> {
   Future<void> getSharedPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     email = prefs.getString('email')!;
+    isDeNoise = prefs.getBool("isDeNoise")??false;
+    isWordAnaylyaser = prefs.getBool("isWordAnaylyaser")??false;
     setState(() {
 
     });
@@ -297,10 +300,12 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> {
             leading: Icon(Icons.logout),
             title: const Text('Log Out',style: TextStyle(color: Colors.blue),),
             onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              await AuthClass().signOut();
               SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.clear();
               Navigator.pop(context);
-              await FirebaseAuth.instance.signOut();
+
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (builder) => LogInPage()),
@@ -524,7 +529,9 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> {
                                         children: [
                                           Checkbox(
                                             value: isDeNoise,
-                                            onChanged: (value1) {
+                                            onChanged: (value1) async{
+                                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                                              prefs.setBool('isDeNoise', value1!);
                                               setState(() {
                                                 isDeNoise = value1!;
                                               });
@@ -542,7 +549,9 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> {
                                         children: [
                                           Checkbox(
                                             value: isWordAnaylyaser,
-                                            onChanged: (value2) {
+                                            onChanged: (value2) async{
+                                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                                              prefs.setBool('isWordAnaylyaser', value2!);
                                               setState(() {
                                                 isWordAnaylyaser = value2!;
                                               });
