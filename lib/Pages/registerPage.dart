@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:voice_to_text/Pages/registerPage.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
 
 import '../firebase_service.dart';
 import 'Audio_Record_screen.dart';
-import 'MobilLoginScreen.dart';
 
-class LogInPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
 
   @override
-  _LogInPageState createState() => _LogInPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LogInPageState extends State<LogInPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -32,12 +30,11 @@ class _LogInPageState extends State<LogInPage> {
     return Scaffold(
       backgroundColor: Colors.blue,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-           flex: 1,
-              child: Container(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
                 padding: const EdgeInsets.all(30),
                 child:  Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +43,7 @@ class _LogInPageState extends State<LogInPage> {
                     const Text(
                       "Welcome",
                       style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 25,
                           fontWeight: FontWeight.w400),
                     ),
@@ -56,7 +53,7 @@ class _LogInPageState extends State<LogInPage> {
                     Row(
                       children: [
                         const Text(
-                          "Login to continue",
+                          "SignUp to continue",
                           style: TextStyle(
                               color: Color(0xFF616161),
                               fontSize: 22,
@@ -71,10 +68,7 @@ class _LogInPageState extends State<LogInPage> {
                   ],
                 ),
               ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Container(
+              Container(
                 alignment: Alignment.topLeft,
                 padding: const EdgeInsets.all(30),
                 decoration: BoxDecoration(
@@ -90,6 +84,7 @@ class _LogInPageState extends State<LogInPage> {
                       ),
                     ]),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
@@ -103,7 +98,7 @@ class _LogInPageState extends State<LogInPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                   /* EmailFieldWidget(
+                                    EmailFieldWidget(
                                         controller: _firstNameController,icon: Icons.supervised_user_circle,hint: "First name",
                                     validators: (value) {
                                       if(value!.isEmpty){
@@ -133,7 +128,7 @@ class _LogInPageState extends State<LogInPage> {
                                       }
                                     } ,
                                         controller: _dobCintroller,icon: Icons.date_range,hint: "DOB",),
-*/
+
                                     const SizedBox(height: 12,),
                                     EmailFieldWidget(validators: (value) {
                                       if(value!.isEmpty){
@@ -153,7 +148,7 @@ class _LogInPageState extends State<LogInPage> {
                                       }
                                     } ,
                                         controller: _passwordController,icon: Icons.password,hint: "Password",),
-/*
+
                                     const SizedBox(height: 12,),
                                     EmailFieldWidget(validators: (value) {
                                      return null;
@@ -175,7 +170,7 @@ class _LogInPageState extends State<LogInPage> {
                                     EmailFieldWidget(validators: (value) {
                                      return null;
                                     } ,
-                                      controller: _nationalityController, icon: Icons.map_outlined,hint: "Nationality",),*/
+                                      controller: _nationalityController, icon: Icons.map_outlined,hint: "Nationality",),
 
 
                                   ],
@@ -188,8 +183,12 @@ class _LogInPageState extends State<LogInPage> {
                         BtnWidget(
                           lable: "Login",
                           ontap: () {
-
-                            if (_formKey.currentState?.validate()==true) {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (builder) => AudioRecoedScreen()),
+                                    (route) => false);
+                         /*   if (_formKey.currentState?.validate()==true) {
                               fconnection
                                   .saveToFirebase(_emailController.text)
                                   .whenComplete(() async {
@@ -203,75 +202,36 @@ class _LogInPageState extends State<LogInPage> {
                                         builder: (builder) => AudioRecoedScreen()),
                                     (route) => false);
                               });
-                            }
+                            }*/
                           },
                         ),
                       ],
                     ),
-                    SizedBox(height: 18,),
-                    GestureDetector(
-                      onTap:(){
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (builder) => RegisterPage()));
-
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            "Don't have an account ? ",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 13,
-                            ),
-                          ),
-                          Text(
-                            "Sign up",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(child:Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("OR",style: TextStyle(color: Colors.grey),),
-                      ],
-                    ),height: 24,),
-
-                    GestureDetector(
-
-                      onTap:(){
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (builder) => MobileLogInPage()));
-
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Text(
-                            "Login With Mobile",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w400,
-                                fontSize: 15),
+                      children: const [
+                        Text(
+                          "Don't have an account ? ",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 13,
                           ),
-                        ],
-                      ),
+                        ),
+                        Text(
+                          "Sign up",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 15),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

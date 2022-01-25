@@ -145,7 +145,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
     Color? color;
 
     if (isPlayingList[index]) {
-      icon = Icon(Icons.stop, color: Colors.red, size: 30);
+      icon = Icon(Icons.pause, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     } else {
       // final theme = Theme.of(context);
@@ -192,7 +192,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
   }
 
   stopAudio(int index) {
-    player.stop().then((value) {
+    player.pause().then((value) {
       setState(() {
         for (int i = 0; i < isPlayingList.length; i++) {
           isPlayingList[i]=false;

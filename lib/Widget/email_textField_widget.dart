@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 
 class EmailFieldWidget extends StatefulWidget {
   final TextEditingController controller;
+   IconData icon;
+   String hint;
+  final FormFieldValidator<String> validators;
 
-  const EmailFieldWidget({
+   EmailFieldWidget({
 
-     required this.controller,
+     required this.controller,required this.icon,required this.hint, required this.validators
   });
 
   @override
@@ -33,12 +36,17 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
   @override
   Widget build(BuildContext context) => TextFormField(
       controller: widget.controller,
+       validator: widget.validators,
       decoration: InputDecoration(
         // helperText: 'Email',
+
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
         ),
-        prefixIcon: const Icon(Icons.mail),
+        prefixIcon:  Icon(widget.icon),
+
+        hintText: widget.hint,
+        hintStyle: TextStyle(fontSize: 16.0, color: Colors.grey.withOpacity(0.4)),
         suffixIcon: widget.controller.text.isEmpty
             ? Container(width: 0)
             : IconButton(
@@ -48,18 +56,6 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
       ),
       keyboardType: TextInputType.emailAddress,
       autofillHints: const [AutofillHints.email],
-      validator: (email) {
-        if (email == null || email == "") {
-          return 'Emter email';
-        }
-        if (!EmailValidator.validate(email)) {
-          return 'Enter valid email';
-        } else {
-          return null;
-        }
 
-        // email != null && !EmailValidator.validate(email)
-        //     ? 'Enter a valid email'
-        //     : "null",
-      });
+      );
 }

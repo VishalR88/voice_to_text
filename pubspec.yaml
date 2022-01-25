@@ -52,6 +52,8 @@ dependencies:
   audioplayer: ^0.8.1
   uuid:
   cross_file:
+  firebase_auth:
+  pin_code_fields:
 
 dev_dependencies:
   flutter_test:
