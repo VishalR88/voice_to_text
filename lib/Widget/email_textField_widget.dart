@@ -6,12 +6,13 @@ class EmailFieldWidget extends StatefulWidget {
    IconData icon;
    String hint;
    bool obscuretxt;
+   int? maxlength;
   TextInputType? keyboardTYPE;
   final FormFieldValidator<String> validators;
 
    EmailFieldWidget({
 
-     required this.controller,required this.icon,required this.hint, required this.validators,required this.keyboardTYPE,required this.obscuretxt
+     required this.controller,required this.icon,required this.hint, required this.validators,required this.keyboardTYPE,required this.obscuretxt,this.maxlength
   });
 
   @override
@@ -41,9 +42,10 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
     child: TextFormField(
         controller: widget.controller,
          validator: widget.validators,
+        maxLength: widget.maxlength,
         decoration: InputDecoration(
           // helperText: 'Email',
-
+          counterText: "",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
           ),
