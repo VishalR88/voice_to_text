@@ -192,6 +192,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
   }
 
   stopAudio(int index) {
+
     player.pause().then((value) {
       setState(() {
         for (int i = 0; i < isPlayingList.length; i++) {
