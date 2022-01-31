@@ -98,6 +98,7 @@ class _OtpState extends State<Otp> {
             .signInWithPhoneNumber(
             _verificationId, _otp, context)
             .whenComplete(() {
+
           setState(() {
             _isLoggedIn = true;
             _uid = FirebaseAuth.instance.currentUser!.uid;
