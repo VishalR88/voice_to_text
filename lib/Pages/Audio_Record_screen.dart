@@ -26,7 +26,7 @@ class AudioRecoedScreen extends StatefulWidget {
   _AudioRecoedScreenState createState() => _AudioRecoedScreenState();
 }
 
-class _AudioRecoedScreenState extends State<AudioRecoedScreen> {
+class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindingObserver {
   bool _allowWriteFile = false;
   bool _isRecording = false;
   var hasPermission = false;
@@ -176,6 +176,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
 
     getSharedPref();
     _isRecording = false;
@@ -203,6 +204,21 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> {
       });
     });
   }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    player.stop();
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      //stop your audio player
+      player.stop();
+    }else{
+      print(state.toString());
+    }
+  }
 
   void audioFInished() {
     isPlaying = true;
@@ -229,7 +245,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> {
 
   Future<void> getSharedPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    email = prefs.getString('email')!;
+    // email = prefs.getString('email')!;
     isDeNoise = prefs.getBool("isDeNoise")??false;
     isWordAnaylyaser = prefs.getBool("isWordAnaylyaser")??false;
     setState(() {

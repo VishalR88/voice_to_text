@@ -1,13 +1,15 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
+import 'package:voice_to_text/Widget/textFormFiled.dart';
 
 import '../firebase_service.dart';
 import 'Audio_Record_screen.dart';
 
 class RegisterPage extends StatefulWidget {
-
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -24,6 +26,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final _cityController = TextEditingController();
   final _nationalityController = TextEditingController();
   FirebaseConnection fconnection = FirebaseConnection();
+  bool isLoading = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               Container(
                 padding: const EdgeInsets.all(30),
-                child:  Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -51,15 +55,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 5,
                     ),
                     Row(
-                      children: [
-                        const Text(
+                      children: const[
+                         Text(
                           "SignUp to continue",
                           style: TextStyle(
                               color: Color(0xFF616161),
                               fontSize: 22,
                               fontWeight: FontWeight.w400),
                         ),
-                        const SizedBox(
+                         SizedBox(
                           width: 12,
                         ),
                         Icon(Icons.arrow_forward)
@@ -69,6 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               Container(
+
                 alignment: Alignment.topLeft,
                 padding: const EdgeInsets.all(30),
                 decoration: BoxDecoration(
@@ -99,134 +104,205 @@ class _RegisterPageState extends State<RegisterPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     EmailFieldWidget(
-                                        controller: _firstNameController,icon: Icons.supervised_user_circle,hint: "First name",
-                                    validators: (value) {
-                                      if(value!.isEmpty){
-                                        return "please enter First name";
-                                      }else{
-                                        return null;
-                                      }
-                                    } ,
-
+                                      controller: _firstNameController,
+                                      icon: Icons.supervised_user_circle,
+                                      hint: "First name",
+                                      validators: (value) {
+                                        if (value!.isEmpty) {
+                                          return "*please enter First name";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      keyboardTYPE: TextInputType.name,
+                                      obscuretxt: false,
                                     ),
-                                    const SizedBox(height: 12,),
-                                    EmailFieldWidget(validators: (value) {
-                                      if(value!.isEmpty){
-                                        return "please enter Last Name";
-                                      }else{
-                                        return "";
-                                      }
-                                    } ,
-                                        controller: _lastNameController,icon: Icons.supervised_user_circle,hint: "Last Name",),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    EmailFieldWidget(
+                                      validators: (value) {
+                                        if (value!.isEmpty) {
+                                          return "*please enter Last Name";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      keyboardTYPE: TextInputType.name,
+                                      controller: _lastNameController,
+                                      icon: Icons.supervised_user_circle,
+                                      hint: "Last Name",
+                                      obscuretxt: false,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    EmailFieldWidget(
+                                      validators: (value) {
+                                        if (value!.isEmpty) {
+                                          return "*please enter DOB";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      keyboardTYPE: TextInputType.number,
+                                      controller: _dobCintroller,
+                                      icon: Icons.date_range,
+                                      hint: "DOB",
+                                      obscuretxt: false,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    EmailFieldWidget(
+                                      validators: (value) {
+                                        if (value == null || value == "") {
+                                          return '*please enter email id';
+                                        }
+                                        if (!EmailValidator.validate(value)) {
+                                          return '*please enter valid email id';
+                                        } else {
+                                          return null;
+                                        }
 
-                                    const SizedBox(height: 12,),
-                                    EmailFieldWidget(validators: (value) {
-                                      if(value!.isEmpty){
-                                        return "please enter DOB";
-                                      }else{
-                                        return "";
-                                      }
-                                    } ,
-                                        controller: _dobCintroller,icon: Icons.date_range,hint: "DOB",),
-
-                                    const SizedBox(height: 12,),
-                                    EmailFieldWidget(validators: (value) {
-                                      if(value!.isEmpty){
-                                        return "please enter email id";
-                                      }else{
-                                        return "";
-                                      }
-                                    } ,
-                                        controller: _emailController,icon: Icons.email,hint: "Email",),
-
-                                    const SizedBox(height: 12,),
-                                    EmailFieldWidget(validators: (value) {
-                                      if(value!.isEmpty){
-                                        return "please enter Password";
-                                      }else{
-                                        return "";
-                                      }
-                                    } ,
-                                        controller: _passwordController,icon: Icons.password,hint: "Password",),
-
-                                    const SizedBox(height: 12,),
-                                    EmailFieldWidget(validators: (value) {
-                                     return null;
-                                    } ,
-                                        controller: _genderController,icon: Icons.transgender,hint: "Gender",),
-
-                                    const SizedBox(height: 12,),
-                                    EmailFieldWidget(validators: (value) {
-                                     return null;
-                                    } ,
-                                        controller: _locationCOntroller,icon: Icons.location_history,hint: "Location",),
-
-                                    const SizedBox(height: 12,),
-                                    EmailFieldWidget(validators: (value) {
-                                     return null;
-                                    } ,
-                                        controller: _cityController, icon: Icons.location_city,hint: "City",),
-                                    const SizedBox(height: 12,),
-                                    EmailFieldWidget(validators: (value) {
-                                     return null;
-                                    } ,
-                                      controller: _nationalityController, icon: Icons.map_outlined,hint: "Nationality",),
-
-
+                                      },
+                                      keyboardTYPE: TextInputType.emailAddress,
+                                      controller: _emailController,
+                                      icon: Icons.email,
+                                      hint: "Email",
+                                      obscuretxt: false,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    EmailFieldWidget(
+                                      validators: (value) {
+                                        if (value!.isEmpty) {
+                                          return "*please enter Password";
+                                        } else {
+                                          return null;
+                                        }
+                                      },
+                                      keyboardTYPE: TextInputType.text,
+                                      controller: _passwordController,
+                                      icon: Icons.password,
+                                      hint: "Password",
+                                      obscuretxt: true,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    EmailFieldWidget(
+                                      validators: (value) {
+                                        return null;
+                                      },
+                                      keyboardTYPE: TextInputType.text,
+                                      controller: _genderController,
+                                      icon: Icons.transgender,
+                                      hint: "Gender",
+                                      obscuretxt: false,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    EmailFieldWidget(
+                                      validators: (value) {
+                                        return null;
+                                      },
+                                      keyboardTYPE: TextInputType.text,
+                                      controller: _locationCOntroller,
+                                      icon: Icons.location_history,
+                                      hint: "Location",
+                                      obscuretxt: false,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    EmailFieldWidget(
+                                      validators: (value) {
+                                        return null;
+                                      },
+                                      keyboardTYPE: TextInputType.text,
+                                      controller: _cityController,
+                                      icon: Icons.location_city,
+                                      hint: "City",
+                                      obscuretxt: false,
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    EmailFieldWidget(
+                                      validators: (value) {
+                                        return null;
+                                      },
+                                      keyboardTYPE: TextInputType.text,
+                                      controller: _nationalityController,
+                                      icon: Icons.map_outlined,
+                                      hint: "Nationality",
+                                      obscuretxt: false,
+                                    ),
                                   ],
                                 )),
                           ],
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 15,
                         ),
                         BtnWidget(
-                          lable: "Login",
-                          ontap: () {
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (builder) => AudioRecoedScreen()),
-                                    (route) => false);
-                         /*   if (_formKey.currentState?.validate()==true) {
+                          lable: "Sign up",
+                          isLoading: isLoading,
+                          ontap: () async{
+                            if (_formKey.currentState?.validate() == true) {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              // Navigator.pushAndRemoveUntil(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (builder) =>
+                              //             AudioRecoedScreen()),
+                              //     (route) => false);
+
+                             await AuthClass().creaateuserwithemailandpwd(context, _emailController.text, _passwordController.text).whenComplete(() {
+
                               fconnection
-                                  .saveToFirebase(_emailController.text)
+                                  .saveRegisterformData(_firstNameController.text,_lastNameController.text,_dobCintroller.text,_emailController.text,_passwordController.text,_genderController.text)
                                   .whenComplete(() async {
                                 SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
                                 prefs.setString(
                                     'email', '${_emailController.text}');
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (builder) => AudioRecoedScreen()),
-                                    (route) => false);
+                                setState(() {
+                                  isLoading = false;
+                                });
+
                               });
-                            }*/
+                             });
+                            }
                           },
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Don't have an account ? ",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          "Sign up",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 15),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: const [
+                    //     Text(
+                    //       "Don't have an account ? ",
+                    //       style: TextStyle(
+                    //         color: Colors.grey,
+                    //         fontWeight: FontWeight.w300,
+                    //         fontSize: 13,
+                    //       ),
+                    //     ),
+                    //     Text(
+                    //       "Sign up",
+                    //       style: TextStyle(
+                    //           color: Colors.black,
+                    //           fontWeight: FontWeight.w400,
+                    //           fontSize: 15),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),

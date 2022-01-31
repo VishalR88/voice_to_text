@@ -3,10 +3,53 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_to_text/Pages/Audio_Record_screen.dart';
+import 'package:voice_to_text/Pages/login_page.dart';
 
 class AuthClass {
   GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseAuth auth = FirebaseAuth.instance;
+
+  Future<void> creaateuserwithemailandpwd(BuildContext context,String email,String password) async {
+    try {
+      UserCredential ruserCredential = await auth.createUserWithEmailAndPassword(email: email, password: password).whenComplete(() {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:  Text("Successfully registered")));
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (builder) => LogInPage()),
+                (route) => false);
+      });
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  // Future<void> signinwithemailandpwd(BuildContext context,String email,String password) async {
+  //   try {
+  //     UserCredential ruserCredential = await auth.signInWithEmailAndPassword(email: email, password: password);
+  //     if(ruserCredential.user!.uid != "" || ruserCredential.user!.uid != null){
+  //       ScaffoldMessenger.of(context).clearSnackBars();
+  //       ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content:  Text("Login Success")));
+  //       Navigator.pushAndRemoveUntil(
+  //           context,
+  //           MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+  //               (route) => false);
+  //     }
+  //     else{
+  //       ScaffoldMessenger.of(context).clearSnackBars();
+  //       ScaffoldMessenger.of(context).showSnackBar( const SnackBar(content:  Text("Email Passwors doesn't match.")));
+  //     }
+  //
+  //
+  //   } catch (e) {
+  //     print(e);
+  //     // ScaffoldMessenger.of(context).clearSnackBars();
+  //     // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+  //
+  //   }
+  // }
 
 
   Future<void> googleSignin(BuildContext context) async {
@@ -46,8 +89,6 @@ class AuthClass {
     }
   }
 
-
-
   Future<void> signOut() async {
     try {
       await _googleSignIn.signOut();
@@ -58,7 +99,27 @@ class AuthClass {
     }
   }
 
+  Future<void> signInWithPhoneNumber(
+      String verificationId, String smsCode, BuildContext context) async {
+    try {
+      AuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: smsCode);
+      // ignore: unused_local_variable
+      UserCredential userCredential =
+      await auth.signInWithCredential(credential);
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+              (route) => false);
+    } catch (e) {
+      showSnackbar(context, e.toString());
+    }
+  }
 
+  void showSnackbar(BuildContext context, String text) {
+    final snackBar = SnackBar(content: Text(text));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
 
 
