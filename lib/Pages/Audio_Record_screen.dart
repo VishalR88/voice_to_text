@@ -53,6 +53,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
   AudioPlayer player = AudioPlayer();
   Duration playerPosition = Duration();
   Timer? _timer2;
+  double? audioDuration;
 
 
   Future<void> startRecording() async {
@@ -288,50 +289,50 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
         return Future.value(true);
       },
       child: Scaffold(
-         drawer: Drawer(
-      child: ListView(
-      padding: EdgeInsets.zero,
-        children: [
-           DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                  child: Text("${email.toString()}",style: TextStyle(color: Colors.white,fontSize: 24),),
+                ),
+                ListTile(
+                  leading: Icon(Icons.history),
+                  title: const Text('Show History',style: TextStyle(color: Colors.blue),),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ShowAudioHistory())
+                    ).then((value) => Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+                            (route) => false));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.logout),
+                  title: const Text('Log Out',style: TextStyle(color: Colors.blue),),
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    await AuthClass().signOut();
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    prefs.remove('email');
+                    Navigator.pop(context);
+
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (builder) => LogInPage()),
+                            (route) => false);
+
+                  },
+                ),
+              ],
             ),
-            child: Text("${email.toString()}",style: TextStyle(color: Colors.white,fontSize: 24),),
           ),
-          ListTile(
-            leading: Icon(Icons.history),
-            title: const Text('Show History',style: TextStyle(color: Colors.blue),),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ShowAudioHistory())
-              ).then((value) => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
-                      (route) => false));
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: const Text('Log Out',style: TextStyle(color: Colors.blue),),
-            onTap: () async {
-              await FirebaseAuth.instance.signOut();
-              await AuthClass().signOut();
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              prefs.clear();
-              Navigator.pop(context);
-
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (builder) => LogInPage()),
-                      (route) => false);
-
-            },
-          ),
-        ],
-      ),
-    ),
           appBar: AppBar(
             title: const Text("Record Audio"),
             actions: [
@@ -346,48 +347,48 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
             children: [
               !recordedFilePath.isEmpty
                   ? Stack(
+                children: [
+                  !recordedFilePath.isEmpty
+                      ? InkWell(
+                    onTap: () {
+                      /// Need this to avoid click penetration
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        !recordedFilePath.isEmpty
-                            ? InkWell(
-                                onTap: () {
-                                  /// Need this to avoid click penetration
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      child: Center(
-                                        child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width * 0.9,
-                                          height:
-                                              MediaQuery.of(context).size.width * 0.5,
-                                          padding: EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue.withOpacity(0.5),
-                                            borderRadius: BorderRadius.circular(12),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  GestureDetector(
-                                                      onTap: () {
-                                                        refress();
-                                                      },
-                                                      child: const Icon(
-                                                        Icons.refresh,
-                                                        size: 30,
-                                                      )),
-                                                  const SizedBox(width: 10),
-                                                  _buildPauseResumeControl(recordedFilePath),
-                                                  /*   isPlaying
+                        Container(
+                          child: Center(
+                            child: Container(
+                              width:
+                              MediaQuery.of(context).size.width * 0.9,
+                              height:
+                              MediaQuery.of(context).size.width * 0.5,
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: [
+                                      GestureDetector(
+                                          onTap: () {
+                                            refress();
+                                          },
+                                          child: const Icon(
+                                            Icons.mic,
+                                            size: 30,
+                                          )),
+                                      const SizedBox(width: 10),
+                                      _buildPauseResumeControl(recordedFilePath),
+                                      /*   isPlaying
                                                       ? _buildRecordStopControl(context)
                                                       : Container(),*/
                                                   Slider(
@@ -549,7 +550,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                               SharedPreferences prefs = await SharedPreferences.getInstance();
                                               prefs.setBool('isDeNoise', value1!);
                                               setState(() {
-                                                isDeNoise = value1;
+                                                isDeNoise = value1!;
                                               });
                                             },
                                           ),
@@ -569,8 +570,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                               SharedPreferences prefs = await SharedPreferences.getInstance();
                                               prefs.setBool('isWordAnaylyaser', value2!);
                                               setState(() {
-
-                                                isWordAnaylyaser = value2;
+                                                isWordAnaylyaser = value2!;
                                               });
                                             },
                                           ),
@@ -732,6 +732,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
   stopAudio() {
     player.pause().then((value) {
       setState(() {
+        audioDuration = player.duration.inSeconds.toDouble();
         isPlaying = false;
         playerPosition =playerPosition;
       });

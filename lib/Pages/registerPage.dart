@@ -56,14 +56,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Row(
                       children: const[
-                         Text(
+                        Text(
                           "SignUp to continue",
                           style: TextStyle(
                               color: Color(0xFF616161),
                               fontSize: 22,
                               fontWeight: FontWeight.w400),
                         ),
-                         SizedBox(
+                        SizedBox(
                           width: 12,
                         ),
                         Icon(Icons.arrow_forward)
@@ -155,21 +155,23 @@ class _RegisterPageState extends State<RegisterPage> {
                                       height: 5,
                                     ),
                                     EmailFieldWidget(
+                                      maxlength: 10,
                                       validators: (value) {
                                         if (value == null || value == "") {
-                                          return '*please enter email id';
+                                          return '*please enter mobile number';
                                         }
-                                        if (!EmailValidator.validate(value)) {
-                                          return '*please enter valid email id';
-                                        } else {
+                                        // if (!EmailValidator.validate(value)) {
+                                        //   return '*please enter valid email id';
+                                        // }
+                                        else {
                                           return null;
                                         }
 
                                       },
-                                      keyboardTYPE: TextInputType.emailAddress,
+                                      keyboardTYPE: TextInputType.number,
                                       controller: _emailController,
-                                      icon: Icons.email,
-                                      hint: "Email",
+                                      icon: Icons.phone,
+                                      hint: "Mobile number",
                                       obscuretxt: false,
                                     ),
                                     const SizedBox(
@@ -263,21 +265,21 @@ class _RegisterPageState extends State<RegisterPage> {
                               //             AudioRecoedScreen()),
                               //     (route) => false);
 
-                             await AuthClass().creaateuserwithemailandpwd(context, _emailController.text, _passwordController.text).whenComplete(() {
+                              await AuthClass().creaateuserwithemailandpwd(context, _emailController.text, _passwordController.text).whenComplete(() {
 
-                              fconnection
-                                  .saveRegisterformData(_firstNameController.text,_lastNameController.text,_dobCintroller.text,_emailController.text,_passwordController.text,_genderController.text)
-                                  .whenComplete(() async {
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                prefs.setString(
-                                    'email', '${_emailController.text}');
-                                setState(() {
-                                  isLoading = false;
+                                fconnection
+                                    .saveRegisterformData(_firstNameController.text,_lastNameController.text,_dobCintroller.text,_emailController.text,_passwordController.text,_genderController.text)
+                                    .whenComplete(() async {
+                                  SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                                  prefs.setString(
+                                      'email', '${_emailController.text}');
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+
                                 });
-
                               });
-                             });
                             }
                           },
                         ),

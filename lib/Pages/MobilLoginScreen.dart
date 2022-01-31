@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -213,31 +215,44 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            if(_phoneNumber.text.isNotEmpty&&_phoneNumber.text.length == 10)
-                              _pressed=true;
-                          });
-                          if (_phoneNumber.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: const Text("Field can not be empty"),
-                                duration: const Duration(milliseconds: 1000),
-                              ),
-                            );
-                          } else if (_phoneNumber.text.length != 10) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                const Text("Number length should be in 10 digit"),
-                                duration: const Duration(milliseconds: 1000),
-                              ),
-                            );
-                          } else {
+                        onPressed: () async{
+                          try {
+                            final result = await InternetAddress.lookup('example.com');
+                            if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                              print('connected');
+                              setState(() {
+                                if(_phoneNumber.text.isNotEmpty&&_phoneNumber.text.length == 10)
+                                  _pressed=true;
+                              });
+                              if (_phoneNumber.text.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: const Text("Field can not be empty"),
+                                    duration: const Duration(milliseconds: 1000),
+                                  ),
+                                );
+                              } else if (_phoneNumber.text.length != 10) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                    const Text("Number length should be in 10 digit"),
+                                    duration: const Duration(milliseconds: 1000),
+                                  ),
+                                );
+                              } else {
+                                _performSendOTP(_phoneNumber.text);
+                              }
 
-                            _performSendOTP(_phoneNumber.text);
+                              }
+                          } on SocketException catch (_) {
 
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("There is no internet connection , please turn on your internet.")));
                           }
+
+
                         },
                         style: ButtonStyle(
                           foregroundColor: MaterialStateProperty.all<Color>(

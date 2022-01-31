@@ -71,68 +71,66 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
       appBar: AppBar(
         title: const Text("Audio History"),
       ),
-      body: Container(
-        child: ListView.builder(
-            itemCount: audioList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                contentPadding: EdgeInsets.all(8),
-                leading: !audioList[index].isEmpty
-                    ? InkWell(
-                        onTap: () {
-                          /// Need this to avoid click penetration
-                        },
-                        child: Container(
-                          width: 100,
-                          child: Center(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(width: 10),
-                                      _buildPauseResumeControl(
-                                          audioList[index], index),
-                                      const SizedBox(width: 10),
-                                      // isPlaying
-                                      //     ? _buildRecordStopControl(
-                                      //         selectedAudio)
-                                      //     : Container(),
-                                      /*Slider(
-                                       value: playerPosition.inMilliseconds
-                                           ?.toDouble() ??
-                                           0.0,
-                                       onChanged: (double value) {
-                                         return player.seek((value / 1000)
-                                             .roundToDouble());
-                                       },
-                                       min: 0.0,
-                                       max: player.duration.inMilliseconds
-                                           .toDouble()),
-                                       Text(
-                                     '${player.duration.inSeconds.toDouble()}'),*/
-                                      const SizedBox(width: 10),
-                                    ],
-                                  ),
-                                  //const SizedBox(height: 20),
-                                ],
-                              ),
+      body:audioList.isEmpty ? const Center(child: Text("No history found",style: TextStyle(color: Colors.black,fontSize: 20),)) : ListView.builder(
+          itemCount: audioList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              contentPadding: const EdgeInsets.all(8),
+              leading: audioList[index].isNotEmpty
+                  ? InkWell(
+                      onTap: () {
+                        /// Need this to avoid click penetration
+                      },
+                      child: Container(
+                        width: 100,
+                        child: Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(width: 10),
+                                    _buildPauseResumeControl(
+                                        audioList[index], index),
+                                    const SizedBox(width: 10),
+                                    // isPlaying
+                                    //     ? _buildRecordStopControl(
+                                    //         selectedAudio)
+                                    //     : Container(),
+                                    /*Slider(
+                                     value: playerPosition.inMilliseconds
+                                         ?.toDouble() ??
+                                         0.0,
+                                     onChanged: (double value) {
+                                       return player.seek((value / 1000)
+                                           .roundToDouble());
+                                     },
+                                     min: 0.0,
+                                     max: player.duration.inMilliseconds
+                                         .toDouble()),
+                                     Text(
+                                   '${player.duration.inSeconds.toDouble()}'),*/
+                                    const SizedBox(width: 10),
+                                  ],
+                                ),
+                                //const SizedBox(height: 20),
+                              ],
                             ),
                           ),
                         ),
-                      )
-                    : Container(),
-                title: Text("${responseList[index]}"),
-              );
-            }),
-      ),
+                      ),
+                    )
+                  : Container(),
+              title: Text("${responseList[index]}"),
+            );
+          }),
     );
   }
 
