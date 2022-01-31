@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_to_text/Model/login_model.dart';
+import 'package:voice_to_text/Services/firebase_auth_service.dart';
 
 import 'Audio_Record_screen.dart';
 
@@ -43,7 +44,7 @@ class _OtpState extends State<Otp> {
     await prefs.setString('email',phoneNumber);
 
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) =>AudioRecoedScreen()),
+      MaterialPageRoute(builder: (context) =>const AudioRecoedScreen()),
     );
   }
   void _verifyOTP() async {
@@ -52,13 +53,6 @@ class _OtpState extends State<Otp> {
     try {
       await FirebaseAuth.instance.signInWithCredential(credential);
       if (FirebaseAuth.instance.currentUser != null) {
-        // ScaffoldMessenger.of(_context).showSnackBar(
-        //   SnackBar(
-        //     content: Text("User registered successfully"),
-        //     duration: Duration(milliseconds: 1000),
-        //   ),
-        // );
-
         setState(() {
           _isLoggedIn = true;
           _uid = FirebaseAuth.instance.currentUser!.uid;
@@ -74,9 +68,9 @@ class _OtpState extends State<Otp> {
           _pressed = false;
         });
         ScaffoldMessenger.of(_context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text("OTP is wrong"),
-            duration: Duration(milliseconds: 1000),
+            duration: const Duration(milliseconds: 1000),
           ),
         );
       }
@@ -84,10 +78,10 @@ class _OtpState extends State<Otp> {
       print("errorOTPSend ${e.toString()}");
 
       ScaffoldMessenger.of(_context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text(
               "The sms code has expired. Please re-send the verification code to try again."),
-          duration: Duration(milliseconds: 1000),
+          duration: Duration(milliseconds: 2000),
         ),
       );
       setState(() {
@@ -96,6 +90,42 @@ class _OtpState extends State<Otp> {
         _pressed = false;
       });
     }
+  }
+
+  Future<void> _signInWithphonenumber(BuildContext context) async {
+      try {
+        await AuthClass()
+            .signInWithPhoneNumber(
+            _verificationId, _otp, context)
+            .whenComplete(() {
+          setState(() {
+            _isLoggedIn = true;
+            _uid = FirebaseAuth.instance.currentUser!.uid;
+            _pressed = false;
+          });
+         callUserLogin(_verificationId, _otp);
+        }).onError((error, stackTrace) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("error while signin :$error")));
+          setState(() {
+            _isLoggedIn = false;
+            _uid = "";
+            _pressed = false;
+          });
+        });
+
+      } catch (e) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
+        setState(() {
+          _isLoggedIn = false;
+          _uid = "";
+          _pressed = false;
+        });
+      }
+
   }
 
   @override
@@ -121,24 +151,24 @@ class _OtpState extends State<Otp> {
     _context = context;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xfff7f6fb),
+      backgroundColor: const Color(0xfff7f6fb),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 24, horizontal: 32),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
           child: Column(
             children: [
               Align(
                 alignment: Alignment.topLeft,
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: Icon(
+                  child: const Icon(
                     Icons.arrow_back,
                     size: 32,
                     color: Colors.black54,
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 18,
               ),
               Container(
@@ -152,20 +182,20 @@ class _OtpState extends State<Otp> {
                 //   'images/illustration-3.png',
                 // ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 24,
               ),
-              Text(
+              const Text(
                 'Verification',
-                style: TextStyle(
+                style:  TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Text(
+              const Text(
                 "Enter your OTP code number",
                 style: TextStyle(
                   fontSize: 14,
@@ -174,11 +204,11 @@ class _OtpState extends State<Otp> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 28,
               ),
               Container(
-                padding: EdgeInsets.all(28),
+                padding: const EdgeInsets.all(28),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
@@ -231,7 +261,7 @@ class _OtpState extends State<Otp> {
                                   errorBorderColor: Colors.red,
                                 ),
                                 cursorColor: Colors.white,
-                                animationDuration: Duration(milliseconds: 30),
+                                animationDuration: const Duration(milliseconds: 30),
                                 enableActiveFill: true,
                                 errorAnimationController: errorController,
                                 controller: textEditingController,
@@ -311,11 +341,11 @@ class _OtpState extends State<Otp> {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 22,
                     ),
                     _pressed && _isLoggedIn == false
-                        ? CircularProgressIndicator()
+                        ? const CircularProgressIndicator()
                         : SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
@@ -332,14 +362,15 @@ class _OtpState extends State<Otp> {
                                     _pressed = false;
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("Field can not be empty"),
-                                      duration: Duration(milliseconds: 1000),
+                                    const SnackBar(
+                                      content: const Text("Field can not be empty"),
+                                      duration: const Duration(milliseconds: 1000),
                                     ),
                                   );
                                 } else {
                                   _otp = currentText;
-                                  _verifyOTP();
+                                  // _verifyOTP();
+                                  _signInWithphonenumber(context);
                                 }
                               },
                               style: ButtonStyle(
@@ -356,11 +387,11 @@ class _OtpState extends State<Otp> {
                                   ),
                                 ),
                               ),
-                              child: Padding(
-                                padding: EdgeInsets.all(14.0),
+                              child: const Padding(
+                                padding: const EdgeInsets.all(14.0),
                                 child: Text(
                                   "Verify",
-                                  style: TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 16),
                                 ),
                               ),
                             ),
@@ -368,23 +399,23 @@ class _OtpState extends State<Otp> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 18,
               ),
-              Text(
+              const Text(
                 "Didn't you receive any code?",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.black38,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 18,
               ),
               _pressed && _isLoggedIn == false
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : GestureDetector(
                       onTap: () {
                         setState(() {
@@ -393,9 +424,9 @@ class _OtpState extends State<Otp> {
                         });
                         _performSendOTP();
                       },
-                      child: Text(
+                      child: const Text(
                         "Resend New Code",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.green,
@@ -418,7 +449,7 @@ class _OtpState extends State<Otp> {
       required FocusNode upcomingNode,
       required FocusNode gobackNode}) {
     return Container(
-      margin: EdgeInsets.only(right: 10),
+      margin: const EdgeInsets.only(right: 10),
       height: 65,
       child: AspectRatio(
         aspectRatio: 1.0,
@@ -445,16 +476,16 @@ class _OtpState extends State<Otp> {
           showCursor: false,
           readOnly: false,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           keyboardType: TextInputType.number,
           maxLength: 1,
           decoration: InputDecoration(
-            counter: Offstage(),
+            counter: const Offstage(),
             enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 2, color: Colors.blue),
+                borderSide: const BorderSide(width: 2, color: Colors.blue),
                 borderRadius: BorderRadius.circular(12)),
             focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 2, color: Colors.black),
+                borderSide: const BorderSide(width: 2, color: Colors.black),
                 borderRadius: BorderRadius.circular(12)),
           ),
         ),
@@ -502,10 +533,10 @@ class _OtpState extends State<Otp> {
     });
     print("objectError${authException.toString()}");
     ScaffoldMessenger.of(_context).showSnackBar(
-      SnackBar(
-        content: Text(
+      const SnackBar(
+        content: const Text(
             "We have blocked all requests from this device due to unusual activity. Try again later."),
-        duration: Duration(milliseconds: 1000),
+        duration: const Duration(milliseconds: 1000),
       ),
     );
   }
@@ -519,9 +550,9 @@ class _OtpState extends State<Otp> {
       });
     } else {
       ScaffoldMessenger.of(_context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("There was problem while sending OTP"),
-          duration: Duration(milliseconds: 1000),
+          duration: const Duration(milliseconds: 1000),
         ),
       );
     }

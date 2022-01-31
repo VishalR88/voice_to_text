@@ -10,4 +10,17 @@ class FirebaseConnection {
     // var refid = docref.id;
     // print("document id $refid");
   }
+
+  Future<void> saveRegisterformData(String firstname, String lastname,
+      String dob, String email, String pwd,String gender) async {
+    DocumentReference docref = await firestore.collection(
+        "Users Registration Data").add({
+      "firstname": firstname,
+      "lastname": lastname,
+      "dob": dob,
+      "email": email,
+      "pwd": pwd,
+      "gender": gender,
+    });
+  }
 }

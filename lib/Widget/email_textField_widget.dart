@@ -5,11 +5,13 @@ class EmailFieldWidget extends StatefulWidget {
   final TextEditingController controller;
    IconData icon;
    String hint;
+   bool obscuretxt;
+  TextInputType? keyboardTYPE;
   final FormFieldValidator<String> validators;
 
    EmailFieldWidget({
 
-     required this.controller,required this.icon,required this.hint, required this.validators
+     required this.controller,required this.icon,required this.hint, required this.validators,required this.keyboardTYPE,required this.obscuretxt
   });
 
   @override
@@ -34,28 +36,33 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
   void onListen() => setState(() {});
 
   @override
-  Widget build(BuildContext context) => TextFormField(
-      controller: widget.controller,
-       validator: widget.validators,
-      decoration: InputDecoration(
-        // helperText: 'Email',
+  Widget build(BuildContext context) => SizedBox(
+    // height: 56,
+    child: TextFormField(
+        controller: widget.controller,
+         validator: widget.validators,
+        decoration: InputDecoration(
+          // helperText: 'Email',
 
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+
+          prefixIcon:  Icon(widget.icon),
+
+          hintText: widget.hint,
+          hintStyle: TextStyle(fontSize: 16.0, color: Colors.grey.withOpacity(0.4)),
+          suffixIcon: widget.controller.text.isEmpty
+              ? Container(width: 0)
+              : IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => widget.controller.clear(),
+                ),
         ),
-        prefixIcon:  Icon(widget.icon),
+        obscureText: widget.obscuretxt,
+        keyboardType: widget.keyboardTYPE,
+        autofillHints: const [AutofillHints.email],
 
-        hintText: widget.hint,
-        hintStyle: TextStyle(fontSize: 16.0, color: Colors.grey.withOpacity(0.4)),
-        suffixIcon: widget.controller.text.isEmpty
-            ? Container(width: 0)
-            : IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => widget.controller.clear(),
-              ),
-      ),
-      keyboardType: TextInputType.emailAddress,
-      autofillHints: const [AutofillHints.email],
-
-      );
+        ),
+  );
 }

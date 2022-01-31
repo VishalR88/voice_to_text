@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_to_text/Pages/registerPage.dart';
+import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
 
@@ -18,15 +19,15 @@ class MobileLogInPage extends StatefulWidget {
 
 class _MobileLogInPageState extends State<MobileLogInPage> {
   final _formKey = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _dobCintroller = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _genderController = TextEditingController();
-  final _locationCOntroller = TextEditingController();
-  final _cityController = TextEditingController();
-  final _nationalityController = TextEditingController();
+  // final _firstNameController = TextEditingController();
+  // final _lastNameController = TextEditingController();
+  // final _dobCintroller = TextEditingController();
+  // final _emailController = TextEditingController();
+  // final _passwordController = TextEditingController();
+  // final _genderController = TextEditingController();
+  // final _locationCOntroller = TextEditingController();
+  // final _cityController = TextEditingController();
+  // final _nationalityController = TextEditingController();
   TextEditingController _phoneNumber = TextEditingController();
   bool _isLoggedIn = false;
   bool _otpSent = false;
@@ -55,7 +56,7 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content:
           Text("There was problem while sending OTP"),
           duration: Duration(milliseconds: 1000),
@@ -73,10 +74,10 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
       _pressed=false;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content:
         Text("We have blocked all requests from this device due to unusual activity. Try again later."),
-        duration: Duration(milliseconds: 1000),
+        duration: const Duration(milliseconds: 1000),
       ),
     );
   }
@@ -135,18 +136,18 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                       height: 5,
                     ),
                     Row(
-                      children: [
-                        const Text(
+                      children: const[
+                         Text(
                           "Please Enter Your Number",
                           style: TextStyle(
                               color: Color(0xFF616161),
                               fontSize: 22,
                               fontWeight: FontWeight.w400),
                         ),
-                        const SizedBox(
+                         SizedBox(
                           width: 12,
                         ),
-                        Icon(Icons.arrow_forward)
+                         Icon(Icons.arrow_forward)
                       ],
                     ),
                   ],
@@ -178,20 +179,20 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                         new LengthLimitingTextInputFormatter(10),
                       ],
                       keyboardType: TextInputType.number,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                       ),
                       decoration: InputDecoration(
-                        hintStyle: TextStyle(color: Colors.grey),
-                        hintText: "7428730894",
+                        hintStyle: const TextStyle(color: Colors.grey),
+                        hintText: "Enter phone number",
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black12),
+                            borderSide: const BorderSide(color: Colors.black12),
                             borderRadius: BorderRadius.circular(10)),
                         focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black12),
+                            borderSide: const BorderSide(color: Colors.black12),
                             borderRadius: BorderRadius.circular(10)),
-                        prefixIcon: Padding(
+                        prefixIcon: const Padding(
                             padding: EdgeInsets.all(15),
                             child: Text(
                               '+91 ',
@@ -205,10 +206,10 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                         // ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 22,
                     ),
-                    _pressed && _otpSent==false? CircularProgressIndicator():
+                    _pressed && _otpSent==false? const CircularProgressIndicator():
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -219,22 +220,23 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                           });
                           if (_phoneNumber.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Field can not be empty"),
-                                duration: Duration(milliseconds: 1000),
+                              const SnackBar(
+                                content: const Text("Field can not be empty"),
+                                duration: const Duration(milliseconds: 1000),
                               ),
                             );
                           } else if (_phoneNumber.text.length != 10) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
+                              const SnackBar(
                                 content:
-                                Text("Number length should be in 10 digit"),
-                                duration: Duration(milliseconds: 1000),
+                                const Text("Number length should be in 10 digit"),
+                                duration: const Duration(milliseconds: 1000),
                               ),
                             );
                           } else {
 
                             _performSendOTP(_phoneNumber.text);
+
                           }
                         },
                         style: ButtonStyle(
@@ -249,9 +251,9 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                             ),
                           ),
                         ),
-                        child: Padding(
+                        child: const Padding(
                           padding: EdgeInsets.all(14.0),
-                          child: Text(
+                          child:  Text(
                             'Send',
                             style: TextStyle(fontSize: 16),
                           ),
@@ -267,4 +269,7 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
       ),
     );
   }
+
+
+
 }

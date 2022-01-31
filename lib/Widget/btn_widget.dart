@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class BtnWidget extends StatefulWidget {
-  BtnWidget({required this.ontap, required this.lable}) ;
+  BtnWidget({required this.ontap, required this.lable,required this.isLoading}) ;
   Function ontap;
   String lable;
+  bool isLoading;
 
   @override
   _BtnWidgetState createState() => _BtnWidgetState();
@@ -25,11 +26,11 @@ class _BtnWidgetState extends State<BtnWidget> {
         ),
         padding: const EdgeInsets.all(10),
         child: Padding(
-          padding: EdgeInsets.only(left: 5),
-          child: Text(
-            "${widget.lable}",
-            style: TextStyle(
-                color: Colors.white, fontSize: 25, fontWeight: FontWeight.w400),
+          padding: const EdgeInsets.only(left: 5),
+          child:widget.isLoading? const Center(child: CircularProgressIndicator(color: Colors.white,)): Text(
+            widget.lable,
+            style: const TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w400),
           ),
         ),
       ),
