@@ -1,5 +1,6 @@
 import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShowAudioHistory extends StatefulWidget {
@@ -165,7 +166,13 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
   }
 
   playAudio(String url, int index) {
-    stopAudio(index);
+    final indexElementFromList = isPlayingList.indexWhere((element) =>
+    element == true);
+
+    if(index==indexElementFromList){
+      Fluttertoast.showToast(msg: "false");
+    }
+    // stopAudio(index);
     player.play(url).then((value) {
       setState(() {
         for (int i = 0; i < isPlayingList.length; i++) {
@@ -188,10 +195,9 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
       });
     });
   }
+  stopAudioForNew(int index) {
 
-  stopAudio(int index) {
-
-    player.pause().then((value) {
+    player.stop().then((value) {
       setState(() {
         for (int i = 0; i < isPlayingList.length; i++) {
           isPlayingList[i]=false;
@@ -200,10 +206,33 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
           });
         }
         isPlayingList[index] = false;
-       // notifyListPause(index);
+        // notifyListPause(index);
         playerPosition = Duration();
       });
     });
+  }
+
+  stopAudio(int index) {
+    final indexElementFromList = isPlayingList.indexWhere((element) =>
+    element == true);
+
+    if(index==indexElementFromList){
+      Fluttertoast.showToast(msg: "true");
+      player.pause().then((value) {
+        setState(() {
+          for (int i = 0; i < isPlayingList.length; i++) {
+            isPlayingList[i]=false;
+            setState(() {
+
+            });
+          }
+          isPlayingList[index] = false;
+          // notifyListPause(index);
+          playerPosition = Duration();
+        });
+      });
+    }
+
   }
   void notifyListPlay(int index){
 

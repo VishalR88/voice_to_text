@@ -550,7 +550,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                               SharedPreferences prefs = await SharedPreferences.getInstance();
                                               prefs.setBool('isDeNoise', value1!);
                                               setState(() {
-                                                isDeNoise = value1!;
+                                                isDeNoise = value1;
                                               });
                                             },
                                           ),
@@ -570,7 +570,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                               SharedPreferences prefs = await SharedPreferences.getInstance();
                                               prefs.setBool('isWordAnaylyaser', value2!);
                                               setState(() {
-                                                isWordAnaylyaser = value2!;
+                                                isWordAnaylyaser = value2;
                                               });
                                             },
                                           ),
