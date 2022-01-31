@@ -41,7 +41,7 @@ class _OtpState extends State<Otp> {
   void callUserLogin(String phoneNumber, String password) async {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('email',phoneNumber);
+    await prefs.setString('email',_phoneNumber);
 
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) =>const AudioRecoedScreen()),

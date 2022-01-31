@@ -46,6 +46,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
   int dummyFilePathCount = 0;
   int _recordDuration = 0;
 
+
   var recorder = Record();
   Timer? _timer;
   Timer? _ampTimer;
@@ -148,19 +149,30 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
   Future<void> _stop() async {
     _timer?.cancel();
     _ampTimer?.cancel();
-    recordedFilePath = (await recorder.stop())!;
+    recordedFilePath = (await recorder.stop().whenComplete(() {
+      setState(() {
+        // audioDuration = player.duration.inSeconds.toDouble();
+        audioDuration = double.parse("$_recordDuration");
+        _isRecording = false;
+      });
+    }))!;
     print('PPP: ${recordedFilePath}');
     // widget.onStop(path);
 
-    setState(() => _isRecording = false);
+
+
   }
 
   Future<void> _pause() async {
     _timer!.cancel();
     _ampTimer!.cancel();
     await recorder.pause();
+    setState(() {
+      audioDuration = player.duration.inSeconds.toDouble();
+      _isPaused = true;
+    });
 
-    setState(() => _isPaused = true);
+
   }
 
   Future<void> _resume() async {
@@ -227,6 +239,10 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
   }
 
   void refress() {
+    setState(() {
+      player.stop();
+
+    });
     _allowWriteFile = false;
     _isRecording = false;
     hasPermission = false;
@@ -235,9 +251,10 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     showPlayer = false;
     isPlaying = false;
     isLoading = false;
-    isDeNoise = false;
-    isWordAnaylyaser = false;
-    audioFinished = false;
+    // isDeNoise = false;
+    // isWordAnaylyaser = false;
+    audioFinished = true;
+    audioDuration=0.0;
     recordedFilePath = '';
     dummyFilePathCount=0;
     startRecording();
@@ -246,7 +263,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
 
   Future<void> getSharedPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // email = prefs.getString('email')!;
+    email = prefs.getString('email')!;
     isDeNoise = prefs.getBool("isDeNoise")??false;
     isWordAnaylyaser = prefs.getBool("isWordAnaylyaser")??false;
     setState(() {
@@ -404,7 +421,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                                           .duration.inMilliseconds
                                                           .toDouble()),
                                                   Text(
-                                                      '${player.duration.inSeconds.toDouble()}'),
+                                                      '$audioDuration'),
                                                   const SizedBox(width: 10),
                                                 ],
                                               ),
@@ -732,7 +749,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
   stopAudio() {
     player.pause().then((value) {
       setState(() {
-        audioDuration = player.duration.inSeconds.toDouble();
+
         isPlaying = false;
         playerPosition =playerPosition;
       });
