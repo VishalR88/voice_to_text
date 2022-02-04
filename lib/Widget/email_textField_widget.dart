@@ -7,12 +7,17 @@ class EmailFieldWidget extends StatefulWidget {
    String hint;
    bool obscuretxt;
    int? maxlength;
+   bool showHide;
+   bool readOnly;
+   Function? ontapofsuffixicon;
+
+   Function? ontapofeditText;
   TextInputType? keyboardTYPE;
   final FormFieldValidator<String> validators;
 
    EmailFieldWidget({
 
-     required this.controller,required this.icon,required this.hint, required this.validators,required this.keyboardTYPE,required this.obscuretxt,this.maxlength
+     required this.controller,required this.icon,required this.readOnly,this.ontapofeditText,required this.hint,required this.showHide,this.ontapofsuffixicon, required this.validators,required this.keyboardTYPE,required this.obscuretxt,this.maxlength
   });
 
   @override
@@ -40,6 +45,8 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
   Widget build(BuildContext context) => SizedBox(
     // height: 56,
     child: TextFormField(
+        readOnly: widget.readOnly,
+      onTap: widget.hint=="DOB"? (){widget.ontapofeditText!();} :null,
         controller: widget.controller,
          validator: widget.validators,
         maxLength: widget.maxlength,
@@ -50,11 +57,19 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
             borderRadius: BorderRadius.circular(15),
           ),
 
-          prefixIcon:  Icon(widget.icon),
+          prefixIcon: Icon(widget.icon),
 
           hintText: widget.hint,
           hintStyle: TextStyle(fontSize: 16.0, color: Colors.grey.withOpacity(0.4)),
-          suffixIcon: widget.controller.text.isEmpty
+          suffixIcon:widget.hint == "Password" ? IconButton(
+            icon: widget.showHide
+                ? Icon(Icons.visibility_off)
+                : Icon(Icons.visibility),
+            color: Colors.grey.withOpacity(0.7),
+            onPressed: () {
+              widget.ontapofsuffixicon!();
+            },
+          ): widget.controller.text.isEmpty
               ? Container(width: 0)
               : IconButton(
                   icon: const Icon(Icons.close),

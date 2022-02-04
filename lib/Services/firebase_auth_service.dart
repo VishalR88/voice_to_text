@@ -14,15 +14,30 @@ class AuthClass {
       UserCredential ruserCredential = await auth.createUserWithEmailAndPassword(email: email, password: password).whenComplete(() {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:  Text("Successfully registered")));
+      });
+      if(ruserCredential != null) {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (builder) => LogInPage()),
                 (route) => false);
-      });
-    } catch (e) {
+      }
+
+    }
+    catch (e) {
       print(e);
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if(e.toString() == "[firebase_auth/invalid-email] The email address is badly formatted."){
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("The email address is badly formatted, please enter valid email address.")));
+      }
+      else if (e.toString()=="[firebase_auth/email-already-in-use] The email address is already in use by another account."){
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("The email address is already in use by another account.")));
+      }
+      else{
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+
     }
   }
 
@@ -104,19 +119,25 @@ class AuthClass {
     try {
       AuthCredential credential = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: smsCode);
-      // ignore: unused_local_variable
       UserCredential userCredential =
       await auth.signInWithCredential(credential);
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
-              (route) => false);
-    } catch (e) {
-      showSnackbar(context, e.toString());
+      if(userCredential!=null) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+                (route) => false);
+      }
+    }
+    catch (e) {
+      if(e.toString() == "[firebase_auth/invalid-verification-code] The sms verification code used to create the phone auth credential is invalid. Please resend the verification code sms and be sure use the verification code provided by the user."){
+        showSnackbar(context, "You entered wrong OTP, please enter valid verification code");
+      }
+
     }
   }
 
   void showSnackbar(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).clearSnackBars();
     final snackBar = SnackBar(content: Text(text));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }

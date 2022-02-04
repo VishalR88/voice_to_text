@@ -43,15 +43,15 @@ class _OtpState extends State<Otp> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('email',_phoneNumber);
 
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) =>const AudioRecoedScreen()),
-    );
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(builder: (context) =>const AudioRecoedScreen()),
+    // );
   }
   void _verifyOTP() async {
     final credential = PhoneAuthProvider.credential(
         verificationId: _verificationId, smsCode: _otp);
     try {
-      await FirebaseAuth.instance.signInWithCredential(credential);
+     final cred= await FirebaseAuth.instance.signInWithCredential(credential);
       if (FirebaseAuth.instance.currentUser != null) {
         setState(() {
           _isLoggedIn = true;
@@ -59,7 +59,9 @@ class _OtpState extends State<Otp> {
 
           _pressed = false;
         });
-         callUserLogin(_phoneNumber, _otp);
+        if(cred != null) {
+          callUserLogin(_phoneNumber, _otp);
+        }
       } else {
         setState(() {
           _isLoggedIn = false;
@@ -94,18 +96,19 @@ class _OtpState extends State<Otp> {
 
   Future<void> _signInWithphonenumber(BuildContext context) async {
       try {
-        await AuthClass()
+       var res = await AuthClass()
             .signInWithPhoneNumber(
             _verificationId, _otp, context)
             .whenComplete(() {
 
           setState(() {
             _isLoggedIn = true;
-            _uid = FirebaseAuth.instance.currentUser!.uid;
+            // _uid = FirebaseAuth.instance.currentUser!.uid;
             _pressed = false;
           });
-         callUserLogin(_verificationId, _otp);
+          callUserLogin(_verificationId, _otp);
         }).onError((error, stackTrace) {
+          print(error);
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("error while signin :$error")));
@@ -116,7 +119,10 @@ class _OtpState extends State<Otp> {
           });
         });
 
-      } catch (e) {
+
+
+      }
+      catch (e) {
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.toString())));
@@ -405,7 +411,7 @@ class _OtpState extends State<Otp> {
               ),
               const Text(
                 "Didn't you receive any code?",
-                style: const TextStyle(
+                style:  TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: Colors.black38,
@@ -427,7 +433,7 @@ class _OtpState extends State<Otp> {
                       },
                       child: const Text(
                         "Resend New Code",
-                        style: const TextStyle(
+                        style:  TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.green,

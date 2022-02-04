@@ -3,14 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:voice_to_text/Pages/registerPage.dart';
-import 'package:voice_to_text/Services/firebase_auth_service.dart';
-import 'package:voice_to_text/Widget/btn_widget.dart';
-import 'package:voice_to_text/Widget/email_textField_widget.dart';
-
 import '../firebase_service.dart';
-import 'Audio_Record_screen.dart';
 import 'otp.dart';
 
 class MobileLogInPage extends StatefulWidget {
@@ -21,15 +14,7 @@ class MobileLogInPage extends StatefulWidget {
 
 class _MobileLogInPageState extends State<MobileLogInPage> {
   final _formKey = GlobalKey<FormState>();
-  // final _firstNameController = TextEditingController();
-  // final _lastNameController = TextEditingController();
-  // final _dobCintroller = TextEditingController();
-  // final _emailController = TextEditingController();
-  // final _passwordController = TextEditingController();
-  // final _genderController = TextEditingController();
-  // final _locationCOntroller = TextEditingController();
-  // final _cityController = TextEditingController();
-  // final _nationalityController = TextEditingController();
+
   TextEditingController _phoneNumber = TextEditingController();
   bool _isLoggedIn = false;
   bool _otpSent = false;

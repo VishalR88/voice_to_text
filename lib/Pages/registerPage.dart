@@ -1,13 +1,10 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
-import 'package:voice_to_text/Widget/textFormFiled.dart';
 
 import '../firebase_service.dart';
-import 'Audio_Record_screen.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -15,6 +12,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -27,6 +25,36 @@ class _RegisterPageState extends State<RegisterPage> {
   final _nationalityController = TextEditingController();
   FirebaseConnection fconnection = FirebaseConnection();
   bool isLoading = false;
+  bool showHide = true;
+
+  togglepsd() {
+    setState(() {
+      showHide = !showHide;
+    });
+  }
+
+  DateTime selectedDate = DateTime.now();
+  String selectd_date = "";
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1990),
+        lastDate: DateTime(2090));
+    if (picked != null && picked != selectedDate) {
+      final DateFormat formatter =
+      DateFormat('dd/M/yyyy');
+      final String formatted =
+      formatter.format(picked);
+      if(mounted) {
+        setState(() {
+          selectd_date = formatted;
+        });
+      }
+    }
+  }
+
 
 
   @override
@@ -116,6 +144,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       },
                                       keyboardTYPE: TextInputType.name,
                                       obscuretxt: false,
+                                      showHide: false,
+                                      readOnly: false,
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -133,6 +163,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       icon: Icons.supervised_user_circle,
                                       hint: "Last Name",
                                       obscuretxt: false,
+                                      showHide: false,
+                                      readOnly: false,
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -150,29 +182,40 @@ class _RegisterPageState extends State<RegisterPage> {
                                       icon: Icons.date_range,
                                       hint: "DOB",
                                       obscuretxt: false,
+                                      showHide: false,
+                                      readOnly: true,
+                                      ontapofeditText: ()async{
+                                        await _selectDate(context);
+                                        if(selectedDate != "null"){
+                                        setState(() {
+                                          _dobCintroller.text=selectd_date;
+                                        });}
+
+                                        // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("data")));
+                                      },
+
                                     ),
                                     const SizedBox(
                                       height: 5,
                                     ),
                                     EmailFieldWidget(
-                                      maxlength: 10,
+                                      maxlength: 100,
                                       validators: (value) {
                                         if (value == null || value == "") {
-                                          return '*please enter mobile number';
+                                          return '*please enter email address';
                                         }
-                                        // if (!EmailValidator.validate(value)) {
-                                        //   return '*please enter valid email id';
-                                        // }
                                         else {
                                           return null;
                                         }
 
                                       },
-                                      keyboardTYPE: TextInputType.number,
+                                      keyboardTYPE: TextInputType.emailAddress,
                                       controller: _emailController,
-                                      icon: Icons.phone,
-                                      hint: "Mobile number",
+                                      icon: Icons.email,
+                                      hint: "Email",
                                       obscuretxt: false,
+                                      showHide: false,
+                                      readOnly: false,
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -189,7 +232,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                       controller: _passwordController,
                                       icon: Icons.password,
                                       hint: "Password",
-                                      obscuretxt: true,
+                                      obscuretxt: showHide,
+                                      showHide: showHide,
+                                      readOnly: false,
+                                      ontapofsuffixicon: (){
+                                        togglepsd();
+                                      },
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -203,6 +251,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       icon: Icons.transgender,
                                       hint: "Gender",
                                       obscuretxt: false,
+                                      showHide: false,
+                                      readOnly: false,
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -216,6 +266,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       icon: Icons.location_history,
                                       hint: "Location",
                                       obscuretxt: false,
+                                      showHide: false,
+                                      readOnly: false,
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -229,6 +281,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       icon: Icons.location_city,
                                       hint: "City",
                                       obscuretxt: false,
+                                      showHide: false,
+                                      readOnly: false,
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -242,6 +296,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       icon: Icons.map_outlined,
                                       hint: "Nationality",
                                       obscuretxt: false,
+                                      showHide: false,
+                                      readOnly: false,
                                     ),
                                   ],
                                 )),
@@ -270,10 +326,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 fconnection
                                     .saveRegisterformData(_firstNameController.text,_lastNameController.text,_dobCintroller.text,_emailController.text,_passwordController.text,_genderController.text)
                                     .whenComplete(() async {
-                                  SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                                  prefs.setString(
-                                      'email', '${_emailController.text}');
+                                  // SharedPreferences prefs =
+                                  // await SharedPreferences.getInstance();
+                                  // prefs.setString(
+                                  //     'email', '${_emailController.text}');
                                   setState(() {
                                     isLoading = false;
                                   });

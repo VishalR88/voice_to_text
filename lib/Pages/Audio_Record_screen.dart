@@ -136,13 +136,17 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     _ampTimer?.cancel();
 
     _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      setState(() => _recordDuration++);
+      if(mounted) {
+        setState(() => _recordDuration++);
+      }
     });
 
     _ampTimer =
         Timer.periodic(const Duration(milliseconds: 200), (Timer t) async {
       _amplitude = await recorder.getAmplitude();
-      setState(() {});
+      if(mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -222,6 +226,8 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     // TODO: implement dispose
     super.dispose();
     player.stop();
+    recorder.stop();
+    _isRecording = false;
   }
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
