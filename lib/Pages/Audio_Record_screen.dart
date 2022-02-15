@@ -11,7 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -59,7 +59,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
 
   Future<void> startRecording() async {
     if (!_allowWriteFile) {
-      requestWritePermission();
+      // requestWritePermission();
     }
     print('working');
     // Start recording
@@ -119,17 +119,17 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     return directory.path;
   }
 
-  requestWritePermission() async {
-    if (await Permission.storage.request().isGranted) {
-      setState(() {
-        _allowWriteFile = true;
-      });
-    } else {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.storage,
-      ].request();
-    }
-  }
+  // requestWritePermission() async {
+  //   if (await Permission.storage.request().isGranted) {
+  //     setState(() {
+  //       _allowWriteFile = true;
+  //     });
+  //   } else {
+  //     Map<Permission, PermissionStatus> statuses = await [
+  //       Permission.storage,
+  //     ].request();
+  //   }
+  // }
 
   void _startTimer() {
     _timer?.cancel();

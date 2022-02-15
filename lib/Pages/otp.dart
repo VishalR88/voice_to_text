@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_to_text/Model/login_model.dart';
@@ -42,10 +43,9 @@ class _OtpState extends State<Otp> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('email',_phoneNumber);
-
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(builder: (context) =>const AudioRecoedScreen()),
-    // );
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) =>const AudioRecoedScreen()),
+    );
   }
   void _verifyOTP() async {
     final credential = PhoneAuthProvider.credential(
@@ -103,12 +103,13 @@ class _OtpState extends State<Otp> {
 
           setState(() {
             _isLoggedIn = true;
-            // _uid = FirebaseAuth.instance.currentUser!.uid;
+            _uid = FirebaseAuth.instance.currentUser!.uid;
             _pressed = false;
           });
+          Fluttertoast.showToast(msg: "Login Success!");
           callUserLogin(_verificationId, _otp);
         }).onError((error, stackTrace) {
-          print(error);
+          print("======$error======");
           ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("error while signin :$error")));
@@ -294,57 +295,11 @@ class _OtpState extends State<Otp> {
                                 },
                                 beforeTextPaste: (text) {
                                   print("Allowing to paste $text");
-                                  //if you return true then it will show the paste confirmation dialog. Otherwise if false, then nothing will happen.
-                                  //but you can show anything you want here, like your pop up saying wrong paste format or etc
                                   return false;
                                 },
                               ),
                             ),
                           ),
-                          // _textFieldOTP(
-                          //   first: true,
-                          //   last: false,
-                          //   controller: _firstDigit,
-                          //   myNode: node1,
-                          //   upcomingNode: node2,
-                          //   gobackNode: node2,
-                          // ),
-                          // _textFieldOTP(
-                          //   first: false,
-                          //   last: false,
-                          //   controller: _secondDigit,
-                          //   myNode: node2,
-                          //   upcomingNode: node3,
-                          //   gobackNode: node1,
-                          // ),
-                          // _textFieldOTP(
-                          //     first: false,
-                          //     last: false,
-                          //     controller: _thirdDigit,
-                          //     myNode: node3,
-                          //   upcomingNode: node4,
-                          //   gobackNode: node2,),
-                          // _textFieldOTP(
-                          //     first: false,
-                          //     last: false,
-                          //     controller: _fourthDigit,
-                          //     myNode: node4,
-                          //   upcomingNode: node5,
-                          //   gobackNode: node3,),
-                          // _textFieldOTP(
-                          //     first: false,
-                          //     last: false,
-                          //     controller: _fifthDigit,
-                          //     myNode: node5,
-                          //   upcomingNode: node6,
-                          //   gobackNode: node4,),
-                          // _textFieldOTP(
-                          //     first: false,
-                          //     last: true,
-                          //     controller: _sixthDigit,
-                          //     myNode: node6,
-                          //   upcomingNode: node6,
-                          //   gobackNode: node5,),
                         ],
                       ),
                     ),

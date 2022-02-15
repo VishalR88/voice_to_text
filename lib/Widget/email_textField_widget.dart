@@ -61,7 +61,7 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
 
           hintText: widget.hint,
           hintStyle: TextStyle(fontSize: 16.0, color: Colors.grey.withOpacity(0.4)),
-          suffixIcon:widget.hint == "Password" ? IconButton(
+          suffixIcon:widget.hint == "Password" || widget.hint == "Confirm password" ? IconButton(
             icon: widget.showHide
                 ? Icon(Icons.visibility_off)
                 : Icon(Icons.visibility),

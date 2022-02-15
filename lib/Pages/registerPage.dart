@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:voice_to_text/Constant/ApiConstants.dart';
+import 'package:voice_to_text/Pages/login_page.dart';
 import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
@@ -205,9 +212,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                           return '*please enter email address';
                                         }
                                         else {
-                                          return null;
+                                          return EmailValidator.validate(value) ? null : "*Please enter a valid email";
                                         }
-
                                       },
                                       keyboardTYPE: TextInputType.emailAddress,
                                       controller: _emailController,
@@ -314,6 +320,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               setState(() {
                                 isLoading = true;
                               });
+                              SignUpAPI();
                               // Navigator.pushAndRemoveUntil(
                               //     context,
                               //     MaterialPageRoute(
@@ -321,21 +328,21 @@ class _RegisterPageState extends State<RegisterPage> {
                               //             AudioRecoedScreen()),
                               //     (route) => false);
 
-                              await AuthClass().creaateuserwithemailandpwd(context, _emailController.text, _passwordController.text).whenComplete(() {
-
-                                fconnection
-                                    .saveRegisterformData(_firstNameController.text,_lastNameController.text,_dobCintroller.text,_emailController.text,_passwordController.text,_genderController.text)
-                                    .whenComplete(() async {
-                                  // SharedPreferences prefs =
-                                  // await SharedPreferences.getInstance();
-                                  // prefs.setString(
-                                  //     'email', '${_emailController.text}');
-                                  setState(() {
-                                    isLoading = false;
-                                  });
-
-                                });
-                              });
+                              // await AuthClass().creaateuserwithemailandpwd(context, _emailController.text, _passwordController.text).whenComplete(() {
+                              //
+                              //   fconnection
+                              //       .saveRegisterformData(_firstNameController.text,_lastNameController.text,_dobCintroller.text,_emailController.text,_passwordController.text,_genderController.text)
+                              //       .whenComplete(() async {
+                              //     // SharedPreferences prefs =
+                              //     // await SharedPreferences.getInstance();
+                              //     // prefs.setString(
+                              //     //     'email', '${_emailController.text}');
+                              //     setState(() {
+                              //       isLoading = false;
+                              //     });
+                              //
+                              //   });
+                              // });
                             }
                           },
                         ),
@@ -370,4 +377,61 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
+
+  Future<void> SignUpAPI() async {
+    final uri = Uri.parse(APIConstants.BaseURL+APIConstants.SignUp);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
+      "firstName":_firstNameController.text,
+      "lastName":_lastNameController.text,
+      "dob":_dobCintroller.text,
+      "email":_emailController.text,
+      "phone":APIConstants.Phone,
+      "password":_passwordController.text,
+      "gender":_genderController.text,
+      "location":_locationCOntroller.text,
+      "city":_cityController.text,
+      "nationality":_nationalityController.text
+    };
+    String jsonBody = json.encode(body);
+    final encoding = Encoding.getByName('utf-8');
+
+    Response response = await post(
+      uri,
+      headers: headers,
+      body: jsonBody,
+      encoding: encoding,
+    );
+
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    var res = jsonDecode(responseBody);
+    if (statusCode == 200) {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(msg: "Registered Successfully!");
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (builder) => LogInPage()),
+              (route) => false);
+    }
+    else if (statusCode == 400){
+      setState(() {
+        isLoading = false;
+      });
+      if(res['message'] == "email must be unique"){
+        Fluttertoast.showToast(msg: "Email already exists , try different");
+      }
+
+    }
+      else {
+      setState(() {
+        isLoading = false;
+      });
+      Fluttertoast.showToast(msg: response.statusCode.toString());
+    }
+  }
 }
+
+
