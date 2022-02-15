@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:voice_to_text/Constant/ApiConstants.dart';
+import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/login_page.dart';
 import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
@@ -19,7 +20,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -47,22 +47,23 @@ class _RegisterPageState extends State<RegisterPage> {
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(1990),
-        lastDate: DateTime(2090));
+        firstDate: DateTime(1950),
+        lastDate: DateTime.now());
     if (picked != null && picked != selectedDate) {
-      final DateFormat formatter =
-      DateFormat('dd/M/yyyy');
-      final String formatted =
-      formatter.format(picked);
-      if(mounted) {
+      final DateFormat formatter = DateFormat('dd/M/yyyy');
+      final String formatted = formatter.format(picked);
+      if (mounted) {
         setState(() {
           selectd_date = formatted;
         });
       }
     }
   }
-
-
+  bool validateStructure(String value){
+    String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    RegExp regExp = RegExp(pattern);
+    return regExp.hasMatch(value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       height: 5,
                     ),
                     Row(
-                      children: const[
+                      children: const [
                         Text(
                           "SignUp to continue",
                           style: TextStyle(
@@ -108,7 +109,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               Container(
-
                 alignment: Alignment.topLeft,
                 padding: const EdgeInsets.all(30),
                 decoration: BoxDecoration(
@@ -191,16 +191,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                       obscuretxt: false,
                                       showHide: false,
                                       readOnly: true,
-                                      ontapofeditText: ()async{
+                                      ontapofeditText: () async {
                                         await _selectDate(context);
-                                        if(selectedDate != "null"){
-                                        setState(() {
-                                          _dobCintroller.text=selectd_date;
-                                        });}
+                                        if (selectedDate != "null") {
+                                          setState(() {
+                                            _dobCintroller.text = selectd_date;
+                                          });
+                                        }
 
                                         // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("data")));
                                       },
-
                                     ),
                                     const SizedBox(
                                       height: 5,
@@ -210,9 +210,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                       validators: (value) {
                                         if (value == null || value == "") {
                                           return '*please enter email address';
-                                        }
-                                        else {
-                                          return EmailValidator.validate(value) ? null : "*Please enter a valid email";
+                                        } else {
+                                          return EmailValidator.validate(value)
+                                              ? null
+                                              : "*Please enter a valid email";
                                         }
                                       },
                                       keyboardTYPE: TextInputType.emailAddress,
@@ -230,7 +231,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                       validators: (value) {
                                         if (value!.isEmpty) {
                                           return "*please enter Password";
-                                        } else {
+                                        }
+                                        else if(!validateStructure(value)){
+                                          return "*password required minimum length of 8 character and 1 upper case, 1 lowercase, 1 numeric number, 1 special character, common allow character (! @ # \$ * ~)";
+                                        }else {
                                           return null;
                                         }
                                       },
@@ -241,7 +245,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       obscuretxt: showHide,
                                       showHide: showHide,
                                       readOnly: false,
-                                      ontapofsuffixicon: (){
+                                      ontapofsuffixicon: () {
                                         togglepsd();
                                       },
                                     ),
@@ -315,12 +319,51 @@ class _RegisterPageState extends State<RegisterPage> {
                         BtnWidget(
                           lable: "Sign up",
                           isLoading: isLoading,
-                          ontap: () async{
+                          ontap: () async {
                             if (_formKey.currentState?.validate() == true) {
                               setState(() {
                                 isLoading = true;
                               });
-                              SignUpAPI();
+                              var response = await API().SignUpAPI(
+                                  _firstNameController.text,
+                                  _lastNameController.text,
+                                  _dobCintroller.text,
+                                  _emailController.text,
+                                  _passwordController.text,
+                                  _genderController.text,
+                                  _locationCOntroller.text,
+                                  _cityController.text,
+                                  _nationalityController.text);
+                              int statusCode = response.statusCode;
+                              String responseBody = response.body;
+                              var res = jsonDecode(responseBody);
+                              if (statusCode == 200) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                Fluttertoast.showToast(
+                                    msg: "Registered Successfully!");
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (builder) => LogInPage()),
+                                    (route) => false);
+                              } else if (statusCode == 400) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                if (res['message'] == "email must be unique") {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Email already exists , try different");
+                                }
+                              } else {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                Fluttertoast.showToast(
+                                    msg: response.statusCode.toString());
+                              }
                               // Navigator.pushAndRemoveUntil(
                               //     context,
                               //     MaterialPageRoute(
@@ -377,61 +420,4 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-
-  Future<void> SignUpAPI() async {
-    final uri = Uri.parse(APIConstants.BaseURL+APIConstants.SignUp);
-    final headers = {'Content-Type': 'application/json'};
-    Map<String, dynamic> body = {
-      "firstName":_firstNameController.text,
-      "lastName":_lastNameController.text,
-      "dob":_dobCintroller.text,
-      "email":_emailController.text,
-      "phone":APIConstants.Phone,
-      "password":_passwordController.text,
-      "gender":_genderController.text,
-      "location":_locationCOntroller.text,
-      "city":_cityController.text,
-      "nationality":_nationalityController.text
-    };
-    String jsonBody = json.encode(body);
-    final encoding = Encoding.getByName('utf-8');
-
-    Response response = await post(
-      uri,
-      headers: headers,
-      body: jsonBody,
-      encoding: encoding,
-    );
-
-    int statusCode = response.statusCode;
-    String responseBody = response.body;
-    var res = jsonDecode(responseBody);
-    if (statusCode == 200) {
-      setState(() {
-        isLoading = false;
-      });
-      Fluttertoast.showToast(msg: "Registered Successfully!");
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (builder) => LogInPage()),
-              (route) => false);
-    }
-    else if (statusCode == 400){
-      setState(() {
-        isLoading = false;
-      });
-      if(res['message'] == "email must be unique"){
-        Fluttertoast.showToast(msg: "Email already exists , try different");
-      }
-
-    }
-      else {
-      setState(() {
-        isLoading = false;
-      });
-      Fluttertoast.showToast(msg: response.statusCode.toString());
-    }
-  }
 }
-
-

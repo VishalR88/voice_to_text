@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_to_text/Constant/ApiConstants.dart';
+import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/forgot_password_page.dart';
 import 'package:voice_to_text/Pages/registerPage.dart';
 import 'package:voice_to_text/Services/firebase_auth_service.dart';
@@ -194,7 +195,37 @@ class _LogInPageState extends State<LogInPage> {
                               setState(() {
                                 isLoading = true;
                               });
-                              SignInAPI();
+                             var response= await API().SignInAPI(_emailController.text, _passwordController.text);
+                             print(response);
+                              int statusCode = response.statusCode;
+                              String responseBody = response.body;
+                              var res = jsonDecode(responseBody);
+                              if (statusCode == 200) {
+                                if(res['message']=="Invalid Password"){
+                                  setState(() {
+                                    isLoading= false;
+                                  });
+                                  Fluttertoast.showToast(msg: res['message']);
+                                }
+                                else if (res['message']=="Invalid Email"){
+                                  setState(() {
+                                    isLoading= false;
+                                  });
+                                  Fluttertoast.showToast(msg: res['message']);
+                                }
+                                else{
+                                  if(res['message'] == "Login successful"){
+                                    setState(() {
+                                      isLoading= false;
+                                    });
+                                    afterLogin(res );
+                                    Fluttertoast.showToast(msg: res['message']);
+                                  }
+                                  Fluttertoast.showToast(msg: res['message']);
+                                }
+                              } else {
+                                Fluttertoast.showToast(msg: response.statusCode.toString());
+                              }
                               // UserCredential cred;
                               // try {
                               //   cred = await FirebaseAuth.instance
@@ -422,53 +453,5 @@ class _LogInPageState extends State<LogInPage> {
       print('not connected');
     }
   }
-  Future<void> SignInAPI() async {
-    final uri = Uri.parse(APIConstants.BaseURL+APIConstants.SignIn);
-    final headers = {'Content-Type': 'application/json'};
-    Map<String, dynamic> body = {
-      "email":_emailController.text,
-      "password":_passwordController.text
-    };
-    String jsonBody = json.encode(body);
-    final encoding = Encoding.getByName('utf-8');
 
-    Response response = await post(
-      uri,
-      headers: headers,
-      body: jsonBody,
-      encoding: encoding,
-    );
-
-    int statusCode = response.statusCode;
-    String responseBody = response.body;
-    var res = jsonDecode(responseBody);
-    if (statusCode == 200) {
-      if(res['message']=="Invalid Password"){
-        setState(() {
-          isLoading= false;
-        });
-        Fluttertoast.showToast(msg: res['message']);
-      }
-      else if (res['message']=="Invalid Email"){
-        setState(() {
-          isLoading= false;
-        });
-        Fluttertoast.showToast(msg: res['message']);
-      }
-      else{
-        if(res['message'] == "Login successful"){
-          setState(() {
-            isLoading= false;
-          });
-          afterLogin(res );
-          Fluttertoast.showToast(msg: res['message']);
-        }
-        Fluttertoast.showToast(msg: res['message']);
-      }
-
-
-    } else {
-      Fluttertoast.showToast(msg: response.statusCode.toString());
-    }
-  }
 }

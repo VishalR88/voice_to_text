@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:voice_to_text/Constant/ApiConstants.dart';
+import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/login_page.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
@@ -32,6 +33,12 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
     setState(() {
       showHidecpsd = !showHidecpsd;
     });
+  }
+
+  bool validateStructure(String value){
+    String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    RegExp regExp = RegExp(pattern);
+    return regExp.hasMatch(value);
   }
 
 
@@ -113,6 +120,8 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                             validators: (value) {
                               if (value!.isEmpty) {
                                 return "*Please enter password";
+                              }else if(!validateStructure(value)){
+                                return "*password required minimum length of 8 character and 1 upper case, 1 lowercase, 1 numeric number, 1 special character, common allow character (! @ # \$ * ~)";
                               } else {
                                 return null;
                               }
@@ -166,8 +175,19 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                           setState(() {
                             isLoading = true;
                           });
-                          ResetPasswordAPI();
-
+                          var response= await API().ResetPasswordAPI("${widget.emailID}",_passwordController.text,_cpasswordController.text);
+                          int statusCode = response.statusCode;
+                          String responseBody = response.body;
+                          var res = jsonDecode(responseBody);
+                          if (statusCode == 200) {
+                            Fluttertoast.showToast(msg: res['message']);
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(builder: (builder) => LogInPage()),
+                                    (route) => false);
+                          } else {
+                            Fluttertoast.showToast(msg: response.statusCode.toString());
+                          }
                         }
                       },
                     ),
@@ -179,37 +199,5 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
         ),
       ),
     );
-  }
-
-  Future<void> ResetPasswordAPI() async {
-    final uri = Uri.parse(APIConstants.BaseURL+APIConstants.ResetPassword);
-    final headers = {'Content-Type': 'application/json'};
-    Map<String, dynamic> body = {
-      "email":widget.emailID,
-      "password":_passwordController.text,
-      "confirmPassword":_cpasswordController.text,
-    };
-    String jsonBody = json.encode(body);
-    final encoding = Encoding.getByName('utf-8');
-
-    Response response = await post(
-      uri,
-      headers: headers,
-      body: jsonBody,
-      encoding: encoding,
-    );
-
-    int statusCode = response.statusCode;
-    String responseBody = response.body;
-    var res = jsonDecode(responseBody);
-    if (statusCode == 200) {
-      Fluttertoast.showToast(msg: res['message']);
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (builder) => LogInPage()),
-              (route) => false);
-    } else {
-      Fluttertoast.showToast(msg: response.statusCode.toString());
-    }
   }
 }

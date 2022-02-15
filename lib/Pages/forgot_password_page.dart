@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:voice_to_text/Constant/ApiConstants.dart';
+import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/new_password_page.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
@@ -128,7 +129,28 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           setState(() {
                             isLoading = true;
                           });
-                          ForgotPasswordAPI();
+                          var response= await API().ForgotPasswordAPI(_emailController.text);
+                          int statusCode = response.statusCode;
+                          String responseBody = response.body;
+                          var res = jsonDecode(responseBody);
+                          if (statusCode == 200) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (builder) => NewPasswordPage(emailID: _emailController.text,)));
+                            Fluttertoast.showToast(msg: res['message']);
+                          }
+                          else if(statusCode== 400){
+                            setState(() {
+                              isLoading = false;
+                            });
+                            Fluttertoast.showToast(msg: res['message']);
+                          }else {
+                            Fluttertoast.showToast(msg: response.statusCode.toString());
+                          }
 
 
                         }
@@ -143,43 +165,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       ),
     );
   }
-  Future<void> ForgotPasswordAPI() async {
-    final uri = Uri.parse(APIConstants.BaseURL+APIConstants.ForgotPassword);
-    final headers = {'Content-Type': 'application/json'};
-    Map<String, dynamic> body = {
-      "email" : _emailController.text,
-    };
-    String jsonBody = json.encode(body);
-    final encoding = Encoding.getByName('utf-8');
 
-    Response response = await post(
-      uri,
-      headers: headers,
-      body: jsonBody,
-      encoding: encoding,
-    );
-
-    int statusCode = response.statusCode;
-    String responseBody = response.body;
-    var res = jsonDecode(responseBody);
-    if (statusCode == 200) {
-      setState(() {
-        isLoading = false;
-      });
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (builder) => NewPasswordPage()));
-      Fluttertoast.showToast(msg: res['message']);
-    }
-    else if(statusCode== 400){
-      setState(() {
-        isLoading = false;
-      });
-      Fluttertoast.showToast(msg: res['message']);
-    }else {
-      Fluttertoast.showToast(msg: response.statusCode.toString());
-    }
-  }
 
 }

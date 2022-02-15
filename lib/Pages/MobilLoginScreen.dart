@@ -212,16 +212,16 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                               if (_phoneNumber.text.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: const Text("Field can not be empty"),
-                                    duration: const Duration(milliseconds: 1000),
+                                    content:  Text("Field can not be empty"),
+                                    duration:  Duration(milliseconds: 1000),
                                   ),
                                 );
                               } else if (_phoneNumber.text.length != 10) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content:
-                                    const Text("Number length should be in 10 digit"),
-                                    duration: const Duration(milliseconds: 1000),
+                                     Text("Number length should be in 10 digit"),
+                                    duration:  Duration(milliseconds: 1000),
                                   ),
                                 );
                               } else {
