@@ -10,37 +10,39 @@ import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
 
 class NewPasswordPage extends StatefulWidget {
-   NewPasswordPage({Key? key,this.emailID}) : super(key: key);
-   String? emailID;
+  NewPasswordPage({Key? key, this.emailID}) : super(key: key);
+  String? emailID;
+
   @override
   _NewPasswordPageState createState() => _NewPasswordPageState();
 }
 
 class _NewPasswordPageState extends State<NewPasswordPage> {
-
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _cpasswordController = TextEditingController();
   bool showHidepsd = true;
   bool showHidecpsd = true;
   bool isLoading = false;
+
   togglepsd() {
     setState(() {
       showHidepsd = !showHidepsd;
     });
   }
+
   togglecpsd() {
     setState(() {
       showHidecpsd = !showHidecpsd;
     });
   }
 
-  bool validateStructure(String value){
-    String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+  bool validateStructure(String value) {
+    String pattern =
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
     RegExp regExp = RegExp(pattern);
     return regExp.hasMatch(value);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +122,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                             validators: (value) {
                               if (value!.isEmpty) {
                                 return "*Please enter password";
-                              }else if(!validateStructure(value)){
+                              } else if (!validateStructure(value)) {
                                 return "*password required minimum length of 8 character and 1 upper case, 1 lowercase, 1 numeric number, 1 special character, common allow character (! @ # \$ * ~)";
                               } else {
                                 return null;
@@ -137,16 +139,16 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                               togglepsd();
                             },
                           ),
-                          const SizedBox(height: 15,),
+                          const SizedBox(
+                            height: 15,
+                          ),
                           EmailFieldWidget(
                             validators: (value) {
                               if (value!.isEmpty) {
                                 return "*Please enter password again";
-                              }
-                              else if(value != _passwordController.text){
+                              } else if (value != _passwordController.text) {
                                 return '*Password doesn\'t matched';
-                              }
-                              else {
+                              } else {
                                 return null;
                               }
                             },
@@ -171,11 +173,14 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                       lable: "let's go!!!",
                       isLoading: isLoading,
                       ontap: () async {
-                        if (_formKey.currentState?.validate() == true) {
+                        if (_formKey.currentState?.validate() == true&& isLoading == false) {
                           setState(() {
                             isLoading = true;
                           });
-                          var response= await API().ResetPasswordAPI("${widget.emailID}",_passwordController.text,_cpasswordController.text);
+                          var response = await API().ResetPasswordAPI(
+                              "${widget.emailID}",
+                              _passwordController.text,
+                              _cpasswordController.text);
                           int statusCode = response.statusCode;
                           String responseBody = response.body;
                           var res = jsonDecode(responseBody);
@@ -183,10 +188,12 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                             Fluttertoast.showToast(msg: res['message']);
                             Navigator.pushAndRemoveUntil(
                                 context,
-                                MaterialPageRoute(builder: (builder) => LogInPage()),
-                                    (route) => false);
+                                MaterialPageRoute(
+                                    builder: (builder) => LogInPage()),
+                                (route) => false);
                           } else {
-                            Fluttertoast.showToast(msg: response.statusCode.toString());
+                            Fluttertoast.showToast(
+                                msg: response.statusCode.toString());
                           }
                         }
                       },

@@ -57,7 +57,7 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
             borderRadius: BorderRadius.circular(15),
           ),
           prefixIcon: Icon(widget.icon),
-          errorMaxLines: 3,
+          errorMaxLines: 4,
           hintText: widget.hint,
           hintStyle: TextStyle(fontSize: 16.0, color: Colors.grey.withOpacity(0.4)),
           suffixIcon:widget.hint == "Password" || widget.hint == "Confirm password" ? IconButton(

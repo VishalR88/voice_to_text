@@ -95,4 +95,41 @@ class API {
     );
     return response;
   }
+
+  Future<Response> SendOTP(String email) async {
+    final uri = Uri.parse(APIConstants.BaseURL + APIConstants.SendOTP);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
+      "email": email,
+    };
+    String jsonBody = json.encode(body);
+    final encoding = Encoding.getByName('utf-8');
+
+    Response response = await post(
+      uri,
+      headers: headers,
+      body: jsonBody,
+      encoding: encoding,
+    );
+    return response;
+  }
+
+  Future<Response> VerifyOTP(String email,String otp) async {
+    final uri = Uri.parse(APIConstants.BaseURL + APIConstants.VerifyOTP);
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
+      "email":email,
+      "otp":otp
+    };
+    String jsonBody = json.encode(body);
+    final encoding = Encoding.getByName('utf-8');
+
+    Response response = await post(
+      uri,
+      headers: headers,
+      body: jsonBody,
+      encoding: encoding,
+    );
+    return response;
+  }
 }

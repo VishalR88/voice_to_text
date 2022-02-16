@@ -7,6 +7,8 @@ import 'package:http/http.dart';
 import 'package:voice_to_text/Constant/ApiConstants.dart';
 import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/new_password_page.dart';
+import 'package:voice_to_text/Pages/registerPage.dart';
+import 'package:voice_to_text/Pages/verify_otp.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
 
@@ -18,8 +20,6 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-
-
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool gbtnprogress = false;
@@ -104,7 +104,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               if (value!.isEmpty) {
                                 return "*Please enter email id";
                               } else {
-                               return EmailValidator.validate(value) ? null : "*Please enter a valid email";
+                                return EmailValidator.validate(value)
+                                    ? null
+                                    : "*Please enter a valid email";
                               }
                             },
                             obscuretxt: false,
@@ -125,11 +127,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       lable: "Verify email",
                       isLoading: isLoading,
                       ontap: () async {
-                        if (_formKey.currentState?.validate() == true) {
+                        if (_formKey.currentState?.validate() == true&& isLoading == false) {
                           setState(() {
                             isLoading = true;
                           });
-                          var response= await API().ForgotPasswordAPI(_emailController.text);
+                          var response = await API()
+                              .ForgotPasswordAPI(_emailController.text);
                           int statusCode = response.statusCode;
                           String responseBody = response.body;
                           var res = jsonDecode(responseBody);
@@ -137,22 +140,33 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                             setState(() {
                               isLoading = false;
                             });
+                            Fluttertoast.showToast(msg: res['message']);
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (builder) => NewPasswordPage(emailID: _emailController.text,)));
-                            Fluttertoast.showToast(msg: res['message']);
-                          }
-                          else if(statusCode== 400){
+                                    builder: (builder) => VerifyOtp(
+                                          fromScreen: "Forgot Password",
+                                          email: _emailController.text,
+                                        )));
+                          } else if (statusCode == 400) {
                             setState(() {
                               isLoading = false;
                             });
-                            Fluttertoast.showToast(msg: res['message']);
-                          }else {
-                            Fluttertoast.showToast(msg: response.statusCode.toString());
+                            if(res['message'] == "User not exists"){
+                              show_dialogue();
+                              Fluttertoast.showToast(msg: res['message']);
+                            }
+                            else{
+                              Fluttertoast.showToast(msg: res['message']);
+                            }
+
+                          } else if (statusCode == 401) {
+                            Fluttertoast.showToast(
+                                msg: "Internal Server Error !!!");
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: response.statusCode.toString());
                           }
-
-
                         }
                       },
                     ),
@@ -165,6 +179,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       ),
     );
   }
-
-
+  show_dialogue(){
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("User not exists !!!"),
+            content: const Text("Do you want to register ?"),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text("YES"),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => RegisterPage()));
+                },
+              ),
+              FlatButton(
+                child: const Text("NO"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        }
+    );
+  }
 }

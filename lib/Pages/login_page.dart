@@ -13,6 +13,7 @@ import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:voice_to_text/Widget/progress_indicator.dart';
 import '../firebase_service.dart';
 import 'Audio_Record_screen.dart';
 import 'MobilLoginScreen.dart';
@@ -126,12 +127,14 @@ class _LogInPageState extends State<LogInPage> {
                                       if (value!.isEmpty) {
                                         return "*please enter email id";
                                       } else {
-                                        return EmailValidator.validate(value) ? null : "*Please enter a valid email";
+                                        return EmailValidator.validate(value)
+                                            ? null
+                                            : "*Please enter a valid email";
                                       }
                                     },
                                     obscuretxt: false,
                                     controller: _emailController,
-                                    icon: Icons.email,
+                                    icon: Icons.person,
                                     readOnly: false,
                                     hint: "Email",
                                     keyboardTYPE: TextInputType.emailAddress,
@@ -168,11 +171,12 @@ class _LogInPageState extends State<LogInPage> {
                           height: 20,
                         ),
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (builder) => ForgotPasswordPage()));
+                                    builder: (builder) =>
+                                        ForgotPasswordPage()));
                           },
                           child: Container(
                               alignment: Alignment.centerRight,
@@ -191,74 +195,44 @@ class _LogInPageState extends State<LogInPage> {
                           lable: "Login",
                           isLoading: isLoading,
                           ontap: () async {
-                            if (_formKey.currentState?.validate() == true) {
+                            if (_formKey.currentState?.validate() == true && isLoading == false) {
                               setState(() {
                                 isLoading = true;
                               });
-                             var response= await API().SignInAPI(_emailController.text, _passwordController.text);
-                             print(response);
+                              var response = await API().SignInAPI(
+                                  _emailController.text,
+                                  _passwordController.text);
+                              print(response);
                               int statusCode = response.statusCode;
                               String responseBody = response.body;
                               var res = jsonDecode(responseBody);
                               if (statusCode == 200) {
-                                if(res['message']=="Invalid Password"){
+                                if (res['message'] == "Invalid Password") {
                                   setState(() {
-                                    isLoading= false;
+                                    isLoading = false;
                                   });
                                   Fluttertoast.showToast(msg: res['message']);
-                                }
-                                else if (res['message']=="Invalid Email"){
+                                } else if (res['message'] == "Invalid Email") {
                                   setState(() {
-                                    isLoading= false;
+                                    isLoading = false;
                                   });
                                   Fluttertoast.showToast(msg: res['message']);
-                                }
-                                else{
-                                  if(res['message'] == "Login successful"){
+                                } else {
+                                  if (res['message'] == "Login successful") {
                                     setState(() {
-                                      isLoading= false;
+                                      isLoading = false;
                                     });
-                                    afterLogin(res );
+                                    afterLogin(res);
                                     Fluttertoast.showToast(msg: res['message']);
                                   }
-                                  Fluttertoast.showToast(msg: res['message']);
                                 }
+                              } else if (statusCode == 401) {
+                                Fluttertoast.showToast(
+                                    msg: "Internal Server Error !!!");
                               } else {
-                                Fluttertoast.showToast(msg: response.statusCode.toString());
+                                Fluttertoast.showToast(
+                                    msg: response.statusCode.toString());
                               }
-                              // UserCredential cred;
-                              // try {
-                              //   cred = await FirebaseAuth.instance
-                              //       .signInWithEmailAndPassword(
-                              //           email: _emailController.text,
-                              //           password: _passwordController.text);
-                              //   if (cred.toString() != null) {
-                              //     afterLogin(FirebaseAuth.instance.currentUser);
-                              //   }
-                              //   print(cred);
-                              // } on FirebaseAuthException catch (authError) {
-                              //   setState(() {
-                              //     isLoading = false;
-                              //   });
-                              //   Fluttertoast.showToast(msg: authError.message.toString());
-                              //   if (authError.toString() ==
-                              //       "[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted.") {
-                              //     ScaffoldMessenger.of(context)
-                              //         .clearSnackBars();
-                              //     ScaffoldMessenger.of(context).showSnackBar(
-                              //       const SnackBar(
-                              //         content: Text("User not found"),
-                              //       ),
-                              //     );
-                              //   }
-                              // } catch (e) {
-                              //   setState(() {
-                              //     isLoading = false;
-                              //   });
-                              //   ScaffoldMessenger.of(context).clearSnackBars();
-                              //   ScaffoldMessenger.of(context).showSnackBar(
-                              //       SnackBar(content: Text(e.toString())));
-                              // }
                             }
                           },
                         ),
@@ -393,10 +367,7 @@ class _LogInPageState extends State<LogInPage> {
                           ),
                           padding: const EdgeInsets.only(right: 7),
                           child: gbtnprogress
-                              ? const Center(
-                                  child: CircularProgressIndicator(
-                                  color: Colors.black87,
-                                ))
+                              ?  const CircilarprogressIndicator()
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -431,9 +402,8 @@ class _LogInPageState extends State<LogInPage> {
   }
 
   void afterLogin(res) async {
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('email',res['data']['email']);
+    prefs.setString('email', res['data']['email']);
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
@@ -453,5 +423,4 @@ class _LogInPageState extends State<LogInPage> {
       print('not connected');
     }
   }
-
 }

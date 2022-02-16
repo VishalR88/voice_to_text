@@ -18,6 +18,7 @@ import 'package:uuid/uuid.dart';
 import 'package:voice_to_text/Pages/login_page.dart';
 import 'package:voice_to_text/Pages/show_audio_history.dart';
 import 'package:voice_to_text/Services/firebase_auth_service.dart';
+import 'package:voice_to_text/Widget/progress_indicator.dart';
 
 class AudioRecoedScreen extends StatefulWidget {
   const AudioRecoedScreen();
@@ -52,7 +53,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
   Timer? _ampTimer;
   Amplitude? _amplitude;
   AudioPlayer player = AudioPlayer();
-  Duration playerPosition = Duration();
+  Duration playerPosition = const Duration();
   Timer? _timer2;
   double? audioDuration;
 
@@ -94,7 +95,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     if (!suffix.startsWith('.')) {
       suffix = '.$suffix';
     }
-    var uuid = Uuid();
+    var uuid = const Uuid();
     String path;
     if (!kIsWeb) {
       var tmpDir = await getApplicationDocumentsDirectory();
@@ -289,18 +290,18 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text("Confirm Exit"),
-                content: Text("Are you sure you want to exit?"),
+                title: const Text("Confirm Exit"),
+                content: const Text("Are you sure you want to exit?"),
                 actions: <Widget>[
                   FlatButton(
-                    child: Text("YES"),
+                    child: const Text("YES"),
                     onPressed: () async {
                       SystemNavigator.pop();
 
                     },
                   ),
                   FlatButton(
-                    child: Text("NO"),
+                    child: const Text("NO"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -317,13 +318,13 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
               padding: EdgeInsets.zero,
               children: [
                 DrawerHeader(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.blue,
                   ),
-                  child: Text("${email.toString()}",style: TextStyle(color: Colors.white,fontSize: 24),),
+                  child: Text(email.toString(),style: const TextStyle(color: Colors.white,fontSize: 24),),
                 ),
                 ListTile(
-                  leading: Icon(Icons.history),
+                  leading: const Icon(Icons.history),
                   title: const Text('Show History',style: TextStyle(color: Colors.blue),),
                   onTap: () {
                     Navigator.pop(context);
@@ -332,12 +333,12 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                         MaterialPageRoute(builder: (context) => ShowAudioHistory())
                     ).then((value) => Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+                        MaterialPageRoute(builder: (builder) => const AudioRecoedScreen()),
                             (route) => false));
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.logout),
+                  leading: const Icon(Icons.logout),
                   title: const Text('Log Out',style: TextStyle(color: Colors.blue),),
                   onTap: () async {
                     await FirebaseAuth.instance.signOut();
@@ -358,20 +359,13 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
           ),
           appBar: AppBar(
             title: const Text("Record Audio"),
-            actions: [
-              // IconButton(
-              //     onPressed: () {
-              //
-              //     },
-              //     icon: Icon(Icons.history))
-            ],
           ),
           body: Stack(
             children: [
-              !recordedFilePath.isEmpty
+              recordedFilePath.isNotEmpty
                   ? Stack(
                 children: [
-                  !recordedFilePath.isEmpty
+                  recordedFilePath.isNotEmpty
                       ? InkWell(
                     onTap: () {
                       /// Need this to avoid click penetration
@@ -379,70 +373,68 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          child: Center(
-                            child: Container(
-                              width:
-                              MediaQuery.of(context).size.width * 0.9,
-                              height:
-                              MediaQuery.of(context).size.width * 0.5,
-                              padding: EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.center,
-                                    children: [
-                                      GestureDetector(
-                                          onTap: () {
-                                            refress();
-                                          },
-                                          child: const Icon(
-                                            Icons.mic,
-                                            size: 30,
-                                          )),
-                                      const SizedBox(width: 10),
-                                      _buildPauseResumeControl(recordedFilePath),
-                                      /*   isPlaying
-                                                      ? _buildRecordStopControl(context)
-                                                      : Container(),*/
-                                                  Slider(
-                                                      value: playerPosition
-                                                          .inMilliseconds
-                                                          .toDouble(),
-                                                      onChanged: (double value) {
-                                                        player.seek((value / 1000)
-                                                            .roundToDouble());
-                                                      },
-                                                      min: 0.0,
-                                                      max: player
-                                                          .duration.inMilliseconds
-                                                          .toDouble()),
-                                                  Text(
-                                                      '$audioDuration'),
-                                                  const SizedBox(width: 10),
-                                                ],
-                                              ),
-                                              //const SizedBox(height: 20),
-                                            ],
-                                          ),
+                        Center(
+                          child: Container(
+                            width:
+                            MediaQuery.of(context).size.width * 0.9,
+                            height:
+                            MediaQuery.of(context).size.width * 0.5,
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.center,
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                  children: [
+                                    GestureDetector(
+                                        onTap: () {
+                                          refress();
+                                        },
+                                        child: const Icon(
+                                          Icons.mic,
+                                          size: 30,
+                                        )),
+                                    const SizedBox(width: 10),
+                                    _buildPauseResumeControl(recordedFilePath),
+                                    /*   isPlaying
+                                                    ? _buildRecordStopControl(context)
+                                                    : Container(),*/
+                                                Slider(
+                                                    value: playerPosition
+                                                        .inMilliseconds
+                                                        .toDouble(),
+                                                    onChanged: (double value) {
+                                                      player.seek((value / 1000)
+                                                          .roundToDouble());
+                                                    },
+                                                    min: 0.0,
+                                                    max: player
+                                                        .duration.inMilliseconds
+                                                        .toDouble()),
+                                                Text(
+                                                    '$audioDuration'),
+                                                const SizedBox(width: 10),
+                                              ],
+                                            ),
+                                            //const SizedBox(height: 20),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    SizedBox(height: 100,),
+                                    const SizedBox(height: 100,),
                                     Padding(
                                       padding: const EdgeInsets.all(18.0),
-                                      child: Container(child: Center(
+                                      child: Center(
                                         child: Text(trascriptedDat),
-                                      ),),
+                                      ),
                                     )
                                   ],
                                 ),
@@ -456,7 +448,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
-                                  padding: EdgeInsets.all(8),
+                                  padding: const EdgeInsets.all(8),
                                   width: double.infinity,
                                   height: 250,
                                   decoration: BoxDecoration(
@@ -467,62 +459,60 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                           onTap: () {
                                             /// Need this to avoid click penetration
                                           },
-                                          child: Container(
-                                            child: Center(
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.9,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.9,
-                                                padding: EdgeInsets.all(16),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue
-                                                      .withOpacity(0.5),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        const SizedBox(width: 20),
-                                                        _buildPauseResumeControlA(),
-                                                        const SizedBox(width: 20),
-                                                        _buildRecordStopControl(
-                                                            context),
-                                                        const SizedBox(width: 20),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 20),
-                                                    _buildText(),
-                                                    const SizedBox(height: 20),
-                                                    !_isRecording && !_isPaused
-                                                        ? ElevatedButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                if (_isRecording) {
-                                                                  _stop();
-                                                                }
-                                                                showRecorder =
-                                                                    false;
-                                                              });
-                                                            },
-                                                            child: Text('Done'),
-                                                          )
-                                                        : Container(),
-                                                  ],
-                                                ),
+                                          child: Center(
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.9,
+                                              padding: const EdgeInsets.all(16),
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue
+                                                    .withOpacity(0.5),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      const SizedBox(width: 20),
+                                                      _buildPauseResumeControlA(),
+                                                      const SizedBox(width: 20),
+                                                      _buildRecordStopControl(
+                                                          context),
+                                                      const SizedBox(width: 20),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 20),
+                                                  _buildText(),
+                                                  const SizedBox(height: 20),
+                                                  !_isRecording && !_isPaused
+                                                      ? ElevatedButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              if (_isRecording) {
+                                                                _stop();
+                                                              }
+                                                              showRecorder =
+                                                                  false;
+                                                            });
+                                                          },
+                                                          child: const Text('Done'),
+                                                        )
+                                                      : Container(),
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -552,7 +542,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                             onTap: () {
                                               startRecording();
                                             },
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.mic,
                                               color: Colors.red,
                                               size: 50,
@@ -577,7 +567,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                               });
                                             },
                                           ),
-                                          Text("Denoise")
+                                          const Text("Denoise")
                                         ],
                                       ),
                                     ),
@@ -597,7 +587,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                                               });
                                             },
                                           ),
-                                          Text("Word Analyser")
+                                          const Text("Word Analyser")
                                         ],
                                       ),
                                     ),
@@ -612,9 +602,9 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
                       height: double.infinity,
                       width: double.infinity,
                       color: Colors.white.withOpacity(0.9),
-                      child: const Center(
-                        child: CircularProgressIndicator(),
-                      ))),
+                      child: const
+                         CircilarprogressIndicator(),
+                      )),
             ],
           ),
           bottomNavigationBar: recordedFilePath!=null && recordedFilePath!=""?InkWell(
@@ -660,11 +650,11 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     Color color;
 
     if (_isRecording || _isPaused) {
-      icon = Icon(Icons.stop, color: Colors.red, size: 30);
+      icon = const Icon(Icons.stop, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     } else {
       final theme = Theme.of(context);
-      icon = Icon(Icons.assignment_turned_in_rounded,
+      icon = const Icon(Icons.assignment_turned_in_rounded,
           color: Colors.green, size: 30);
       color = Colors.green.withOpacity(0.2);
     }
@@ -691,11 +681,11 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     Color color;
 
     if (isPlaying) {
-      icon = Icon(Icons.stop, color: Colors.red, size: 30);
+      icon = const Icon(Icons.stop, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     } else {
       // final theme = Theme.of(context);
-      icon = Icon(Icons.play_arrow, color: Colors.red, size: 30);
+      icon = const Icon(Icons.play_arrow, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     }
 
@@ -717,7 +707,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
       return _buildTimer();
     }
 
-    return Text("Voice message recorded");
+    return const Text("Voice message recorded");
   }
 
   Widget _buildTimer() {
@@ -726,7 +716,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
 
     return Text(
       '$minutes : $seconds',
-      style: TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white),
     );
   }
 
@@ -747,7 +737,7 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     }).onError((error, stackTrace) {
       setState(() {
         isPlaying = false;
-        playerPosition = Duration();
+        playerPosition = const Duration();
       });
     });
   }
@@ -771,11 +761,11 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
     Color? color;
 
     if (!_isPaused) {
-      icon = Icon(Icons.pause, color: Colors.red, size: 30);
+      icon = const Icon(Icons.pause, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     } else {
       // final theme = Theme.of(context);
-      icon = Icon(Icons.play_arrow, color: Colors.red, size: 30);
+      icon = const Icon(Icons.play_arrow, color: Colors.red, size: 30);
       // color = theme.primaryColor.withOpacity(0.1);
     }
 
@@ -793,14 +783,11 @@ class _AudioRecoedScreenState extends State<AudioRecoedScreen> with WidgetsBindi
   }
 
   Future<void> UpdateAudioAPI(BuildContext context) async {
-
-
-
     setState(() {
       isLoading = true;
     });
     //this raw material file
-    File file = new File(recordedFilePath);
+    File file =  File(recordedFilePath);
 
     var dataOffset = 74; // parse the WAV header or determine from a hex dump
     Uint8List assetByteData = await File(recordedFilePath).readAsBytes();
@@ -829,7 +816,7 @@ try {
     headers: headers,
     body: jsonBody,
     encoding: encoding,
-  ).timeout(Duration(seconds: 10));
+  ).timeout(const Duration(seconds: 10));
 
   int statusCode = response.statusCode;
   String responseBody = response.body;
@@ -875,7 +862,7 @@ try {
         );*/
     }
   }
-} catch (Exception) {
+} catch (e) {
   throw TimeoutException('The connection has timed out, Please try again!');
 }
 
@@ -885,7 +872,7 @@ timeOut(BuildContext context){
 
     Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => AudioRecoedScreen()));
+        MaterialPageRoute(builder: (context) => const AudioRecoedScreen()));
     Fluttertoast.showToast(msg: "Something Went Wrong Please try after some time");
 
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:voice_to_text/Widget/progress_indicator.dart';
 
 class BtnWidget extends StatefulWidget {
   BtnWidget({required this.ontap, required this.lable,required this.isLoading}) ;
@@ -27,7 +28,7 @@ class _BtnWidgetState extends State<BtnWidget> {
         padding: const EdgeInsets.all(10),
         child: Padding(
           padding: const EdgeInsets.only(left: 5),
-          child:widget.isLoading? const Center(child: CircularProgressIndicator(color: Colors.white,)): Text(
+          child:widget.isLoading? const CircilarprogressIndicator(): Text(
             widget.lable,
             style: const TextStyle(
                 color: Colors.white, fontSize: 20, fontWeight: FontWeight.w400),
