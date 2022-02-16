@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ShowAudioHistory extends StatefulWidget {
+  const ShowAudioHistory({Key? key}) : super(key: key);
+
   @override
   _ShowAudioHistoryState createState() => _ShowAudioHistoryState();
 }
@@ -13,7 +15,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
   AudioPlayer player = AudioPlayer();
   bool isPlaying = false;
   bool showPlayer = true;
-  Duration playerPosition = Duration();
+  Duration playerPosition = const Duration();
   List<String> audioList = [];
   List<String> responseList = [];
   var isPlayingList;
@@ -55,7 +57,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
     responseList = prefs.getStringList('transcription')!;
      responseList= responseList.reversed.toList();
     num=audioList.length;
-    isPlayingList = new List.filled(num, false, growable: false);
+    isPlayingList = List.filled(num, false, growable: false);
     for (int i = 0; i < isPlayingList.length; i++) {
       isPlayingList[i]=false;
       setState(() {
@@ -82,7 +84,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
                       onTap: () {
                         /// Need this to avoid click penetration
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: 100,
                         child: Center(
                           child: Container(
@@ -129,7 +131,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
                       ),
                     )
                   : Container(),
-              title: Text("${responseList[index]}"),
+              title: Text(responseList[index]),
             );
           }),
     );
@@ -144,11 +146,11 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
     Color? color;
 
     if (isPlayingList[index]) {
-      icon = Icon(Icons.pause, color: Colors.red, size: 30);
+      icon = const Icon(Icons.pause, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     } else {
       // final theme = Theme.of(context);
-      icon = Icon(Icons.play_arrow, color: Colors.red, size: 30);
+      icon = const Icon(Icons.play_arrow, color: Colors.red, size: 30);
       // color = theme.primaryColor.withOpacity(0.1);
     }
 
@@ -196,7 +198,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
       setState(() {
         isPlayingList[index] = true;
 
-        playerPosition = Duration();
+        playerPosition = const Duration();
       });
     });
   }
@@ -214,7 +216,7 @@ class _ShowAudioHistoryState extends State<ShowAudioHistory> {
         }
          isPlayingList[index] = false;
        // notifyListPause(index);
-        playerPosition = Duration();
+        playerPosition = const Duration();
       });
     });
   }

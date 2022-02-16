@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:voice_to_text/Widget/progress_indicator.dart';
 
 class BtnWidget extends StatefulWidget {
-  BtnWidget({required this.ontap, required this.lable,required this.isLoading}) ;
+  BtnWidget({Key? key, required this.ontap, required this.lable,required this.isLoading}) : super(key: key) ;
   Function ontap;
   String lable;
   bool isLoading;

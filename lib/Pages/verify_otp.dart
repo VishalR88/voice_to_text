@@ -118,7 +118,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
+                          SizedBox(
                             height: 70,
                             width: MediaQuery.of(context).size.width,
                             child: Form(
@@ -143,7 +143,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                   } else {
                                     return null;
                                   }
-                                  return null;
+
                                 },
                                 pinTheme: PinTheme(
                                   shape: PinCodeFieldShape.box,
@@ -287,7 +287,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                         child: isLoading
                             ? const CircilarprogressIndicator()
                             : const Padding(
-                                padding: const EdgeInsets.all(14.0),
+                                padding: EdgeInsets.all(14.0),
                                 child: Text(
                                   "Verify",
                                   style: TextStyle(fontSize: 16),

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:voice_to_text/Model/login_model.dart';
 import 'package:voice_to_text/Services/firebase_auth_service.dart';
 
 import 'Audio_Record_screen.dart';
@@ -13,7 +12,7 @@ import 'Audio_Record_screen.dart';
 class Otp extends StatefulWidget {
   String _verificationId, _phoneNumber;
 
-  Otp(this._verificationId, this._phoneNumber);
+  Otp(this._verificationId, this._phoneNumber, {Key? key}) : super(key: key);
 
   @override
   _OtpState createState() => _OtpState(this._verificationId, this._phoneNumber);
@@ -72,7 +71,7 @@ class _OtpState extends State<Otp> {
         ScaffoldMessenger.of(_context).showSnackBar(
           const SnackBar(
             content: Text("OTP is wrong"),
-            duration: const Duration(milliseconds: 1000),
+            duration:  Duration(milliseconds: 1000),
           ),
         );
       }
@@ -227,7 +226,7 @@ class _OtpState extends State<Otp> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
+                          SizedBox(
                             height: 70,
                             width: MediaQuery.of(context).size.width,
                             child: Form(
@@ -325,8 +324,8 @@ class _OtpState extends State<Otp> {
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: const Text("Field can not be empty"),
-                                      duration: const Duration(milliseconds: 1000),
+                                      content:  Text("Field can not be empty"),
+                                      duration:  Duration(milliseconds: 1000),
                                     ),
                                   );
                                 } else {
@@ -350,10 +349,10 @@ class _OtpState extends State<Otp> {
                                 ),
                               ),
                               child: const Padding(
-                                padding: const EdgeInsets.all(14.0),
+                                padding:  EdgeInsets.all(14.0),
                                 child: Text(
                                   "Verify",
-                                  style: const TextStyle(fontSize: 16),
+                                  style:  TextStyle(fontSize: 16),
                                 ),
                               ),
                             ),
@@ -431,7 +430,7 @@ class _OtpState extends State<Otp> {
             if (value.length == 1 && last == false) {
               FocusScope.of(context).requestFocus(upcomingNode);
             }
-            if (value.length == 0 && first == false) {
+            if (value.isEmpty && first == false) {
               FocusScope.of(context).requestFocus(gobackNode);
             }
           },
@@ -496,9 +495,9 @@ class _OtpState extends State<Otp> {
     print("objectError${authException.toString()}");
     ScaffoldMessenger.of(_context).showSnackBar(
       const SnackBar(
-        content: const Text(
+        content:  Text(
             "We have blocked all requests from this device due to unusual activity. Try again later."),
-        duration: const Duration(milliseconds: 1000),
+        duration:  Duration(milliseconds: 1000),
       ),
     );
   }
@@ -514,7 +513,7 @@ class _OtpState extends State<Otp> {
       ScaffoldMessenger.of(_context).showSnackBar(
         const SnackBar(
           content: Text("There was problem while sending OTP"),
-          duration: const Duration(milliseconds: 1000),
+          duration:  Duration(milliseconds: 1000),
         ),
       );
     }

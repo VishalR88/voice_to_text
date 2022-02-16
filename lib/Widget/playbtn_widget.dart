@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PlayBtnWidget extends StatefulWidget {
-  PlayBtnWidget({ required this.ontap, required this.lable}) ;
+  PlayBtnWidget({Key? key,  required this.ontap, required this.lable}) : super(key: key) ;
   Function ontap;
   String lable;
 
@@ -26,7 +26,7 @@ class _BtnWidgetState extends State<PlayBtnWidget> {
         ),
         padding: const EdgeInsets.all(10),
         child: Text(
-          "${widget.lable}",
+          widget.lable,
           style: const TextStyle(
               color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400),
         ),

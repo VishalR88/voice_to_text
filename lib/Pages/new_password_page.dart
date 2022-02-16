@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
-import 'package:voice_to_text/Constant/ApiConstants.dart';
 import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/login_page.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';

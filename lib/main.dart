@@ -12,14 +12,13 @@ Future main() async {
   await Firebase.initializeApp();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var email = prefs.getString('email');
-  print(email);
-  runApp(MaterialApp(debugShowCheckedModeBanner: false,home: email == null ? LogInPage() : AudioRecoedScreen()));
+  // print(email);
+  runApp(MaterialApp(debugShowCheckedModeBanner: false,home: email == null ? LogInPage() : const AudioRecoedScreen()));
   // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-
-
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

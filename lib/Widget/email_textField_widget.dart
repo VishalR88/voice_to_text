@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
 class EmailFieldWidget extends StatefulWidget {
@@ -15,10 +14,10 @@ class EmailFieldWidget extends StatefulWidget {
   TextInputType? keyboardTYPE;
   final FormFieldValidator<String> validators;
 
-   EmailFieldWidget({
+   EmailFieldWidget({Key? key,
 
      required this.controller,required this.icon,required this.readOnly,this.ontapofeditText,required this.hint,required this.showHide,this.ontapofsuffixicon, required this.validators,required this.keyboardTYPE,required this.obscuretxt,this.maxlength
-  });
+  }) : super(key: key);
 
   @override
   _EmailFieldWidgetState createState() => _EmailFieldWidgetState();
@@ -62,8 +61,8 @@ class _EmailFieldWidgetState extends State<EmailFieldWidget> {
           hintStyle: TextStyle(fontSize: 16.0, color: Colors.grey.withOpacity(0.4)),
           suffixIcon:widget.hint == "Password" || widget.hint == "Confirm password" ? IconButton(
             icon: widget.showHide
-                ? Icon(Icons.visibility_off)
-                : Icon(Icons.visibility),
+                ? const Icon(Icons.visibility_off)
+                : const Icon(Icons.visibility),
             color: Colors.grey.withOpacity(0.7),
             onPressed: () {
               widget.ontapofsuffixicon!();

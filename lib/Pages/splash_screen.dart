@@ -6,6 +6,8 @@ import 'Audio_Record_screen.dart';
 import 'login_page.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -47,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Future.delayed(const Duration(seconds: 2), () {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+            MaterialPageRoute(builder: (builder) => const AudioRecoedScreen()),
                 (route) => false);
       });
     }else{

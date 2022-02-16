@@ -3,19 +3,18 @@ import 'dart:convert';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
-import 'package:voice_to_text/Constant/ApiConstants.dart';
 import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/login_page.dart';
 import 'package:voice_to_text/Pages/verify_otp.dart';
-import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
 
 import '../firebase_service.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }

@@ -176,7 +176,7 @@ class _LogInPageState extends State<LogInPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (builder) =>
-                                        ForgotPasswordPage()));
+                                        const ForgotPasswordPage()));
                           },
                           child: Container(
                               alignment: Alignment.centerRight,
@@ -406,7 +406,7 @@ class _LogInPageState extends State<LogInPage> {
     prefs.setString('email', res['data']['email']);
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+        MaterialPageRoute(builder: (builder) => const AudioRecoedScreen()),
         (route) => false);
     setState(() {
       isLoading = false;

@@ -42,7 +42,7 @@ class _ListItemCardState extends State<ListItemCard> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          build_row("${widget.inputtitle}", "${widget.inputname}", () {
+          build_row(widget.inputtitle, widget.inputname, () {
             widget.inputontap();
           }, () {
             widget.ontapofinputicon();
@@ -51,7 +51,7 @@ class _ListItemCardState extends State<ListItemCard> {
             color: Colors.black26,
             height: 5,
           ),
-          build_row("${widget.outputtitle}", "${widget.outputname}", () {
+          build_row(widget.outputtitle, widget.outputname, () {
             widget.outputontap();
           }, () {
             widget.ontapofoutputicon();

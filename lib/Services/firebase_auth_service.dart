@@ -6,7 +6,7 @@ import 'package:voice_to_text/Pages/Audio_Record_screen.dart';
 import 'package:voice_to_text/Pages/login_page.dart';
 
 class AuthClass {
-  GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseAuth auth = FirebaseAuth.instance;
 
   Future<void> creaateuserwithemailandpwd(BuildContext context,String email,String password) async {
@@ -87,13 +87,13 @@ class AuthClass {
 
           Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+              MaterialPageRoute(builder: (builder) => const AudioRecoedScreen()),
                   (route) => false);
         } catch (e) {
           print(e);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(e.toString()),
-            duration: Duration(milliseconds: 3000),
+            duration: const Duration(milliseconds: 3000),
           ));
         }
       } else {
@@ -124,7 +124,7 @@ class AuthClass {
       if(userCredential!=null) {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (builder) => AudioRecoedScreen()),
+            MaterialPageRoute(builder: (builder) => const AudioRecoedScreen()),
                 (route) => false);
       }
     }

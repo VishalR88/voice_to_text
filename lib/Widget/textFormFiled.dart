@@ -16,10 +16,9 @@ class TextformField extends StatefulWidget {
 }
 
 class _TextformFieldState extends State<TextformField> {
-  final _lemailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       // margin: EdgeInsets.all(10.0),
       width: MediaQuery.of(context).size.width / 1.2,
      // height: MediaQuery.of(context).size.height*0.06455,
