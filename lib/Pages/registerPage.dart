@@ -8,6 +8,7 @@ import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/login_page.dart';
 import 'package:voice_to_text/Pages/verify_otp.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
+import 'package:voice_to_text/Widget/dropDown_Field.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
 
 import '../firebase_service.dart';
@@ -33,6 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
   FirebaseConnection fconnection = FirebaseConnection();
   bool isLoading = false;
   bool showHide = true;
+  String? gender;
 
   togglepsd() {
     setState(() {
@@ -50,7 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
         firstDate: DateTime(1950),
         lastDate: DateTime.now());
     if (picked != null && picked != selectedDate) {
-      final DateFormat formatter = DateFormat('yyyy/M/dd');
+      final DateFormat formatter = DateFormat('dd/MM/yyyy');
       final String formatted = formatter.format(picked);
       if (mounted) {
         setState(() {
@@ -59,7 +61,6 @@ class _RegisterPageState extends State<RegisterPage> {
       }
     }
   }
-
   bool validateStructure(String value) {
     String pattern =
         r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
@@ -261,18 +262,26 @@ class _RegisterPageState extends State<RegisterPage> {
                                       const SizedBox(
                                         height: 5,
                                       ),
-                                      EmailFieldWidget(
-                                        validators: (value) {
-                                          return null;
-                                        },
-                                        keyboardTYPE: TextInputType.text,
-                                        controller: _genderController,
-                                        icon: Icons.transgender,
-                                        hint: "Gender",
-                                        obscuretxt: false,
-                                        showHide: false,
-                                        readOnly: false,
-                                      ),
+                                       DropDownField(selectedValue: gender,onselectGender: (value){
+                                         setState(() {
+                                           gender = value.toString();
+                                         });
+                                       },),
+                                      // EmailFieldWidget(
+                                      //   validators: (value) {
+                                      //     return null;
+                                      //   },
+                                      //   keyboardTYPE: TextInputType.text,
+                                      //   controller: _genderController,
+                                      //   icon: Icons.transgender,
+                                      //   hint: "Gender",
+                                      //   obscuretxt: false,
+                                      //   showHide: false,
+                                      //   readOnly: false,
+                                      //   ontapofeditText: (){
+                                      //
+                                      //   },
+                                      // ),
                                       const SizedBox(
                                         height: 5,
                                       ),
@@ -340,7 +349,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     _dobCintroller.text,
                                     _emailController.text,
                                     _passwordController.text,
-                                    _genderController.text,
+                                    "$gender",
                                     _locationCOntroller.text,
                                     _cityController.text,
                                     _nationalityController.text,

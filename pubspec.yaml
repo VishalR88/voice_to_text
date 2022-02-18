@@ -55,6 +55,7 @@ dependencies:
   firebase_auth:
   pin_code_fields:
   google_sign_in: ^5.1.0
+  dropdown_button2: ^1.1.1
 
 dev_dependencies:
   flutter_test:

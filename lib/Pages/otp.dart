@@ -164,11 +164,11 @@ class _OtpState extends State<Otp> {
           padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 32),
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: const Icon(
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: const Align(
+                  alignment: Alignment.topLeft,
+                  child: Icon(
                     Icons.arrow_back,
                     size: 32,
                     color: Colors.black54,
