@@ -10,7 +10,7 @@ class CircilarprogressIndicator extends StatelessWidget {
         width: 25,
         alignment: Alignment.center,
         child: const CircularProgressIndicator(
-          color: Colors.white,
+          color: Colors.black38,
         ));
   }
 }

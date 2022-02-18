@@ -3,16 +3,13 @@ import 'dart:convert';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:voice_to_text/Constant/ApiConstants.dart';
 import 'package:voice_to_text/Model/API_class.dart';
 import 'package:voice_to_text/Pages/forgot_password_page.dart';
 import 'package:voice_to_text/Pages/registerPage.dart';
 import 'package:voice_to_text/Services/firebase_auth_service.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
 import 'package:voice_to_text/Widget/email_textField_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:voice_to_text/Widget/progress_indicator.dart';
 import '../firebase_service.dart';
 import 'Audio_Record_screen.dart';
@@ -20,6 +17,8 @@ import 'MobilLoginScreen.dart';
 import 'dart:io';
 
 class LogInPage extends StatefulWidget {
+  const LogInPage({Key? key}) : super(key: key);
+
   @override
   _LogInPageState createState() => _LogInPageState();
 }
@@ -246,7 +245,7 @@ class _LogInPageState extends State<LogInPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (builder) => RegisterPage()));
+                                builder: (builder) => const RegisterPage()));
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -287,7 +286,7 @@ class _LogInPageState extends State<LogInPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (builder) => MobileLogInPage()));
+                                  builder: (builder) => const MobileLogInPage()));
                         },
                         child: Container(
                           height: 45,

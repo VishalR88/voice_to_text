@@ -7,14 +7,14 @@ class LoginModel {
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['data'] != null ?  Data.fromJson(json['data']) : null;
     msg = json['msg'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['msg'] = this.msg;
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    data['success'] = success;
+    data['msg'] = msg;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -102,47 +102,47 @@ class Data {
     if (json['roles'] != null) {
       roles = [];
       json['roles'].forEach((v) {
-        roles!.add(new Roles.fromJson(v));
+        roles!.add( Roles.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['image'] = this.image;
-    data['email_id'] = this.emailId;
-    data['email_verified_at'] = this.emailVerifiedAt;
-    data['phone'] = this.phone;
-    data['is_verified'] = this.isVerified;
-    data['status'] = this.status;
-    data['otp'] = this.otp;
-    data['faviroute'] = this.faviroute;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['token'] = this.token;
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['image'] = image;
+    data['email_id'] = emailId;
+    data['email_verified_at'] = emailVerifiedAt;
+    data['phone'] = phone;
+    data['is_verified'] = isVerified;
+    data['status'] = status;
+    data['otp'] = otp;
+    data['faviroute'] = faviroute;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['token'] = token;
 
-    if (this.ifscCode != null) {
-      data['ifsc_code'] = this.ifscCode;
+    if (ifscCode != null) {
+      data['ifsc_code'] = ifscCode;
     }
-    if (this.micrCode != null) {
-      data['micr_code'] = this.micrCode;
+    if (micrCode != null) {
+      data['micr_code'] = micrCode;
     }
-    if (this.language != null) {
-      data['language'] = this.language;
-    }
-
-    if (this.accountNumber != null) {
-      data['account_number'] = this.accountNumber;
+    if (language != null) {
+      data['language'] = language;
     }
 
-    if (this.accountNumber != null) {
-      data['account_number'] = this.accountNumber;
+    if (accountNumber != null) {
+      data['account_number'] = accountNumber;
     }
 
-    if (this.roles != null) {
-      data['roles'] = this.roles!.map((v) => v.toJson()).toList();
+    if (accountNumber != null) {
+      data['account_number'] = accountNumber;
+    }
+
+    if (roles != null) {
+      data['roles'] = roles!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -162,17 +162,17 @@ class Roles {
     title = json['title'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    pivot = json['pivot'] != null ? new Pivot.fromJson(json['pivot']) : null;
+    pivot = json['pivot'] != null ?  Pivot.fromJson(json['pivot']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['title'] = this.title;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.pivot != null) {
-      data['pivot'] = this.pivot!.toJson();
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (pivot != null) {
+      data['pivot'] = pivot!.toJson();
     }
     return data;
   }
@@ -190,9 +190,9 @@ class Pivot {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['user_id'] = this.userId;
-    data['role_id'] = this.roleId;
+    final Map<String, dynamic> data =  <String, dynamic>{};
+    data['user_id'] = userId;
+    data['role_id'] = roleId;
     return data;
   }
 }

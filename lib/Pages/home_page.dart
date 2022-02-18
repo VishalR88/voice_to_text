@@ -1,12 +1,11 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voice_to_text/Model/listitems_model.dart';
 
 import 'Audio_Record_screen.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({ required this.email});
+  HomePage({Key? key,  required this.email}) : super(key: key);
   String email;
   @override
   _HomePageState createState() => _HomePageState();
@@ -170,7 +169,7 @@ class _HomePageState extends State<HomePage> {
 
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  AudioRecoedScreen()),
+            MaterialPageRoute(builder: (context) =>  const AudioRecoedScreen()),
           );
 
          // audioPlayer!.stop();

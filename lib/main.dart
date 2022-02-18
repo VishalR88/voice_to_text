@@ -13,7 +13,7 @@ Future main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var email = prefs.getString('email');
   // print(email);
-  runApp(MaterialApp(debugShowCheckedModeBanner: false,home: email == null ? LogInPage() : const AudioRecoedScreen()));
+  runApp(MaterialApp(debugShowCheckedModeBanner: false,home: email == null ? const LogInPage() : const AudioRecoedScreen()));
   // runApp(MyApp());
 }
 

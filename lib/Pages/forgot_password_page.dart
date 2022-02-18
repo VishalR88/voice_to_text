@@ -3,10 +3,7 @@ import 'dart:convert';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
-import 'package:voice_to_text/Constant/ApiConstants.dart';
 import 'package:voice_to_text/Model/API_class.dart';
-import 'package:voice_to_text/Pages/new_password_page.dart';
 import 'package:voice_to_text/Pages/registerPage.dart';
 import 'package:voice_to_text/Pages/verify_otp.dart';
 import 'package:voice_to_text/Widget/btn_widget.dart';
@@ -195,7 +192,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (builder) => RegisterPage()));
+                          builder: (builder) => const RegisterPage()));
                 },
               ),
               FlatButton(

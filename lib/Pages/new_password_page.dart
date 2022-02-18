@@ -187,7 +187,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (builder) => LogInPage()),
+                                    builder: (builder) => const LogInPage()),
                                 (route) => false);
                           } else {
                             Fluttertoast.showToast(

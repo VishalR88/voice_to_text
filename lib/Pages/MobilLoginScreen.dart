@@ -7,15 +7,16 @@ import '../firebase_service.dart';
 import 'otp.dart';
 
 class MobileLogInPage extends StatefulWidget {
+  const MobileLogInPage({Key? key}) : super(key: key);
+
 
   @override
   _MobileLogInPageState createState() => _MobileLogInPageState();
 }
 
 class _MobileLogInPageState extends State<MobileLogInPage> {
-  final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _phoneNumber = TextEditingController();
+  final TextEditingController _phoneNumber = TextEditingController();
   bool _isLoggedIn = false;
   bool _otpSent = false;
   bool _pressed = false;
@@ -64,7 +65,7 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
       const SnackBar(
         content:
         Text("We have blocked all requests from this device due to unusual activity. Try again later."),
-        duration: const Duration(milliseconds: 1000),
+        duration:  Duration(milliseconds: 1000),
       ),
     );
   }
@@ -76,8 +77,9 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
       _isLoggedIn = false;
       _pressed=false;
 
-      if(_verificationID.isNotEmpty)
+      if(_verificationID.isNotEmpty) {
         _moveToOTPScreen();
+      }
     });
   }
   void codeAutoRetrievalTimeout(String verificationId) {
@@ -163,7 +165,7 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                     TextFormField(
                       controller: _phoneNumber,
                       inputFormatters: [
-                        new LengthLimitingTextInputFormatter(10),
+                         LengthLimitingTextInputFormatter(10),
                       ],
                       keyboardType: TextInputType.number,
                       style: const TextStyle(
@@ -206,8 +208,9 @@ class _MobileLogInPageState extends State<MobileLogInPage> {
                             if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
                               print('connected');
                               setState(() {
-                                if(_phoneNumber.text.isNotEmpty&&_phoneNumber.text.length == 10)
+                                if(_phoneNumber.text.isNotEmpty&&_phoneNumber.text.length == 10) {
                                   _pressed=true;
+                                }
                               });
                               if (_phoneNumber.text.isEmpty) {
                                 ScaffoldMessenger.of(context).showSnackBar(
